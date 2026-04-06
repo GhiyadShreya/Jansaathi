@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', 'Noto Sans Devanagari', system-ui, sans-serif;
+    background: #FBF8F4;
+    color: #1A1A2E;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #F0EDE8;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #D97706;
+  }
+
+  /* Hide scrollbar for tab nav */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Devanagari font rendering */
+  [lang="hi"], [lang="pa"], [lang="gu"],
+  .devanagari {
+    font-family: 'Noto Sans Devanagari', 'Baloo 2', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-baloo {
+    font-family: 'Baloo 2', cursive;
+  }
+
+  /* Gradient text utility */
+  .text-gradient-saffron {
+    background: linear-gradient(135deg, #FF6B35, #F59E0B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass morphism card */
+  .glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}

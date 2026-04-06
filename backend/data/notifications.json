@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sched_pmkisan_16",
+    "title": "PM-Kisan 16th Installment",
+    "body": "The 16th installment of PM-Kisan Samman Nidhi has been released. Check your linked bank account.",
+    "type": "scheme",
+    "trigger": "immediate",
+    "read": false,
+    "timestamp": "1 day ago"
+  },
+  {
+    "id": "sched_scholarship_2025",
+    "title": "Scholarship Deadline Reminder",
+    "body": "Post-Matric Scholarship 2024-25 applications close on March 31. Apply now!",
+    "type": "reminder",
+    "trigger": "immediate",
+    "read": false,
+    "timestamp": "2 days ago"
+  },
+  {
+    "id": "sched_ayushman_camp",
+    "title": "Ayushman Card Registration Camp",
+    "body": "Free Ayushman Bharat registration camp near you this weekend. Bring your Aadhaar card.",
+    "type": "alert",
+    "trigger": "immediate",
+    "read": false,
+    "timestamp": "3 days ago"
+  },
+  {
+    "id": "sched_ration_update",
+    "title": "Ration Card Update Required",
+    "body": "Update your ration card family details before end of month to avoid disruption in supply.",
+    "type": "reminder",
+    "trigger": "immediate",
+    "read": false,
+    "timestamp": "4 days ago"
+  }
+]
