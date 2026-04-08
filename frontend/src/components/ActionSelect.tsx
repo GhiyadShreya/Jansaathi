@@ -12,8 +12,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Language, LANGUAGES } from '../types';
-import { speak } from '../services/tts';
-import { GLBAvatar } from './GLBAvatar';
+import { speak, registerAudioBufferCallback } from '../services/tts';
+import { GLBAvatar, GLBAvatarHandle } from './GLBAvatar';
 
 interface ActionSelectProps {
   language: Language;
@@ -97,6 +97,14 @@ export const ActionSelect: React.FC<ActionSelectProps> = ({ language, onSelect }
   const [currentSpeakText, setCurrentSpeakText] = useState<string | undefined>(undefined);
   const [currentGesture, setCurrentGesture] = useState<'namaste' | 'wave' | null>(null);
   const greetedRef = useRef(false);
+  const avatarRef = useRef<GLBAvatarHandle>(null);
+
+  useEffect(() => {
+    const unregister = registerAudioBufferCallback((buf, text, lang) => {
+      avatarRef.current?.speakAudio(buf, text, lang);
+    });
+    return unregister;
+  }, []);
 
   useEffect(() => {
     if (greetedRef.current) return;
@@ -157,6 +165,7 @@ export const ActionSelect: React.FC<ActionSelectProps> = ({ language, onSelect }
         <div className="absolute inset-0 pointer-events-none rounded-full blur-2xl opacity-40"
           style={{ background: 'radial-gradient(circle, rgba(255,107,53,0.3) 0%, transparent 70%)', width: '130%', height: '130%', left: '-15%', top: '-15%' }} />
         <GLBAvatar
+          ref={avatarRef}
           glbUrl="/avatar.glb"
           mood={avatarPhase === 'center' ? 'happy' : 'neutral'}
           gesture={currentGesture}

@@ -4,7 +4,7 @@ import {
   MessageSquare, User, Bell, Mic, Send, ShieldCheck,
   LayoutDashboard, ChevronRight, X, Globe, LogOut
 } from 'lucide-react';
-import { Avatar } from './components/Avatar';
+import { Avatar, AvatarHandle } from './components/Avatar';
 import { ProfileForm } from './components/ProfileForm';
 import { SchemeList } from './components/SchemeList';
 import { GenieIntro } from './components/GenieIntro';
@@ -14,9 +14,10 @@ import { NotificationPanel } from './components/NotificationPanel';
 import { Logo } from './components/Logo';
 import { UserProfile, Scheme, Language, LANGUAGES, AppStep, Notification, DEMO_NOTIFICATIONS, DEMO_SCHEMES } from './types';
 import { getMatchedSchemes, getChatResponse, verifyDocument } from './services/groq';
-import { speak, stopSpeaking, replayLast, registerSpeakingCallback, initSpeechRecognition } from './services/tts';
+import { speak, speakChooseLanguage, speakWelcome, stopSpeaking, replayLast, registerSpeakingCallback, registerAudioBufferCallback, initSpeechRecognition, resumeAudioContext } from './services/tts';
 import { storage } from './services/storage';
 import ReactMarkdown from 'react-markdown';
+import { getQuickPromptResponse } from './services/demoChat';
 
 type Tab = 'dashboard' | 'profile' | 'chat' | 'verify';
 
@@ -79,9 +80,34 @@ export default function App() {
   const [verificationResult, setVerificationResult] = useState<{ valid: boolean; reason: string } | null>(null);
   const [selectedScheme, setSelectedScheme] = useState('Post-Matric Scholarship');
   const [hasGreeted, setHasGreeted] = useState(false);
-
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const stopRecordingRef = useRef<(() => void) | null>(null);
+  const avatarRef = useRef<AvatarHandle>(null);
+
+
+  // Wire TTS audio → avatar lipsync
+  useEffect(() => {
+    const unregister = registerAudioBufferCallback((buf, text, lang) => {
+      avatarRef.current?.speakAudio(buf, text, lang);
+    });
+    return unregister;
+  }, []);
+  useEffect(() => {
+    const unlockAudio = async () => {
+      // Resume the single shared AudioContext used by tts.ts for lipsync decoding.
+      // This also covers talkinghead.mjs which internally creates its own context;
+      // avatarRef.resumeAudio() forwards the resume signal into the GLB avatar.
+      await resumeAudioContext();
+      avatarRef.current?.resumeAudio?.();
+      setAudioUnlocked(true);
+      console.log("🔊 Audio unlocked");
+      window.removeEventListener('click', unlockAudio);
+    };
+
+    window.addEventListener('click', unlockAudio);
+    return () => window.removeEventListener('click', unlockAudio);
+  }, []);
 
   useEffect(() => { registerSpeakingCallback(setIsSpeaking); }, []);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [chatHistory]);
@@ -89,11 +115,21 @@ export default function App() {
   useEffect(() => { storage.saveChatHistory(chatHistory); }, [chatHistory]);
 
   useEffect(() => {
-    if (appStep === 'dashboard' && !hasGreeted) {
+    if (appStep === 'dashboard' && !hasGreeted && audioUnlocked) {
       setHasGreeted(true);
-      setTimeout(() => speak(LANGUAGES[language].greeting, language), 600);
+      const timeoutId = window.setTimeout(() => {
+        if (language === 'pa' || language === 'gu') {
+          speakWelcome(language); // serves pre-cached WAV from disk — instant, no inference
+        } else {
+          speak(LANGUAGES[language].greeting, language);
+        }
+      }, 600);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
     }
-  }, [appStep, language, hasGreeted]);
+  }, [appStep, language, hasGreeted, audioUnlocked]);
 
   const handleGenieComplete = () => setAppStep('language');
 
@@ -119,17 +155,29 @@ export default function App() {
     speak(msg, language);
   };
 
-  const handleSendMessage = async (overrideText?: string) => {
+  const handleSendMessage = async (
+    overrideText?: string,
+    options?: { forceLlm?: boolean }
+  ) => {
     const text = overrideText || inputText;
     if (!text.trim()) return;
     stopSpeaking();
     setChatHistory(prev => [...prev, { role: 'user', text }]);
     setInputText('');
-    setIsThinking(true);
-    const reply = await getChatResponse(text, profile, language);
-    setIsThinking(false);
+    const quickReply = options?.forceLlm ? null : getQuickPromptResponse(text, language);
+
+    let reply = quickReply;
+    if (!reply) {
+      setIsThinking(true);
+      reply = await getChatResponse(text, profile, language);
+      setIsThinking(false);
+    }
+
     setChatHistory(prev => [...prev, { role: 'ai', text: reply }]);
-    speak(reply, language);
+    speak(reply, language, undefined, {
+      category: 'chat_response',
+      cacheKey: quickReply ? `quick:${language}:${text.trim().toLowerCase()}` : undefined,
+    });
   };
 
   const toggleRecording = () => {
@@ -142,7 +190,7 @@ export default function App() {
         (transcript) => {
           setIsRecording(false);
           setInputText(transcript);
-          setTimeout(() => handleSendMessage(transcript), 300);
+          setTimeout(() => handleSendMessage(transcript, { forceLlm: true }), 300);
         },
         () => setIsRecording(false)
       );
@@ -289,7 +337,7 @@ export default function App() {
               <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20"
                 style={{ background: 'radial-gradient(circle, #FF6B35, transparent)' }} />
 
-              <Avatar isSpeaking={isSpeaking} mood={isThinking ? 'thinking' : isRecording ? 'listening' : 'neutral'} language={language} />
+              <Avatar ref={avatarRef} isSpeaking={isSpeaking} mood={isThinking ? 'thinking' : isRecording ? 'listening' : 'neutral'} language={language} />
               <div className="mt-5">
                 <h2 className="text-xl font-black text-gray-900" style={{ fontFamily: "'Baloo 2', cursive" }}>
                   Saathi
@@ -579,7 +627,7 @@ export default function App() {
                   <div className="flex items-center justify-between px-6 py-4 border-b"
                     style={{ background: 'linear-gradient(135deg, #FFF7ED, #FFFBEB)', borderColor: '#F0EDE8' }}>
                     <div className="flex items-center gap-3">
-                      <Avatar isSpeaking={isSpeaking} mood={isThinking ? 'thinking' : isRecording ? 'listening' : 'neutral'} language={language} size="sm" />
+                      <Avatar ref={avatarRef} isSpeaking={isSpeaking} mood={isThinking ? 'thinking' : isRecording ? 'listening' : 'neutral'} language={language} size="sm" />
                       <div>
                         <h3 className="font-black text-gray-900">
                           {language === 'hi' ? 'साथी AI' : language === 'pa' ? 'ਸਾਥੀ AI' : 'Saathi AI'}

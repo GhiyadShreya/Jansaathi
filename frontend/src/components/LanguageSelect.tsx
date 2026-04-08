@@ -7,11 +7,11 @@
  *  - All styling colours, animations, and LANG_CONFIG: UNCHANGED.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Language, LANGUAGES } from '../types';
-import { speak } from '../services/tts';
-import { GLBAvatar } from './GLBAvatar';
+import { speak, speakChooseLanguage, registerAudioBufferCallback } from '../services/tts';
+import { GLBAvatar, GLBAvatarHandle } from './GLBAvatar';
 
 interface LanguageSelectProps {
   onSelect: (lang: Language) => void;
@@ -25,11 +25,23 @@ const LANG_CONFIG: { lang: Language; icon: string; color: string; bg: string; bo
 ];
 
 export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelect }) => {
+  const avatarRef = useRef<GLBAvatarHandle>(null);
+
   useEffect(() => {
-    // UNCHANGED: announce the language choices
-    setTimeout(() => {
-      speak('Please select your language. Hindi, English, Punjabi, or Gujarati.', 'en');
+    const unregister = registerAudioBufferCallback((buf, text, lang) => {
+      avatarRef.current?.speakAudio(buf, text, lang);
+    });
+    return unregister;
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      speakChooseLanguage();
     }, 400);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, []);
 
   const handleSelect = (lang: Language) => {
@@ -82,6 +94,7 @@ export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelect }) => {
           transition={{ delay: 0.3, duration: 0.8 }}
         >
           <GLBAvatar
+            ref={avatarRef}
             glbUrl="/avatar.glb"
             mood="neutral"
             gesture={null}

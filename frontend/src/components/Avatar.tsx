@@ -1,17 +1,21 @@
 /**
- * Avatar.tsx  (GLB avatar version)
+ * Avatar.tsx
  *
- * WHAT CHANGED vs original:
- *  - Added `language` prop so GLBAvatar picks the correct Azure Neural voice
- *    (hi-IN-SwaraNeural, gu-IN-DhwaniNeural, pa-IN-OjasNeural, en-IN-NeerjaNeural)
- *  - Azure credentials (VITE_AZURE_TTS_KEY / VITE_AZURE_TTS_REGION) are read
- *    from import.meta.env and forwarded to GLBAvatar — no prop drilling from App.tsx.
- *  - All other props, glow, pulse ring, and mood badge are UNCHANGED.
+ * WHAT CHANGED:
+ *  - Holds a ref to GLBAvatar and exposes speakAudio() via its own ref
+ *  - ttsApiKey / ttsRegion props removed (no longer needed — audio-driven lipsync)
+ *  - App.tsx registers registerAudioBufferCallback() so whenever tts.ts produces
+ *    audio, it lands here and gets forwarded to head.speakAudio()
  */
 
-import React from 'react';
+import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GLBAvatar } from './GLBAvatar';
+import { GLBAvatar, GLBAvatarHandle } from './GLBAvatar';
+
+export interface AvatarHandle {
+  speakAudio: (audioBuffer: AudioBuffer, text: string, lang?: 'en' | 'hi' | 'gu' | 'pa') => void;
+  resumeAudio: () => void;
+}
 
 interface AvatarProps {
   isSpeaking: boolean;
@@ -20,35 +24,43 @@ interface AvatarProps {
   language?: 'en' | 'hi' | 'gu' | 'pa';
 }
 
-export const Avatar: React.FC<AvatarProps> = ({
+export const Avatar = forwardRef<AvatarHandle, AvatarProps>(({
   isSpeaking,
   mood = 'neutral',
   size = 'lg',
   language = 'hi',
-}) => {
-  // Size mapping: match the original SVG avatar's visual footprint
+}, ref) => {
+  const glbRef = useRef<GLBAvatarHandle>(null);
+
   const containerSize =
     size === 'sm' ? { width: 80,  height: 80  } :
     size === 'md' ? { width: 160, height: 160 } :
                     { width: 260, height: 260 };
 
-  // GLBAvatar mood passthrough (TalkingHead mood names)
   const glbMood =
     mood === 'thinking'  ? 'thinking'  :
     mood === 'listening' ? 'listening' :
     mood === 'happy'     ? 'happy'     :
     'neutral';
 
-  // Azure credentials — read once here so GLBAvatar stays generic
-  const ttsApiKey = import.meta.env.VITE_AZURE_TTS_KEY  ?? '';
-  const ttsRegion = import.meta.env.VITE_AZURE_TTS_REGION ?? '';
+  // Expose speakAudio and resumeAudio up to App.tsx
+  useImperativeHandle(ref, () => ({
+    speakAudio(audioBuffer: AudioBuffer, text: string, lang?: 'en' | 'hi' | 'gu' | 'pa') {
+      glbRef.current?.speakAudio(audioBuffer, text, lang ?? language);
+    },
+    // Forwards the user-gesture unlock into the GLB avatar's internal AudioContext
+    // (talkinghead.mjs creates its own context which also needs resuming)
+    resumeAudio() {
+      glbRef.current?.resumeAudio?.();
+    },
+  }));
 
   return (
     <div
       className="relative mx-auto"
       style={{ width: containerSize.width, height: containerSize.height }}
     >
-      {/* Ambient glow — mirrors original */}
+      {/* Ambient glow */}
       <div
         className="absolute inset-0 rounded-full blur-2xl opacity-60 transition-all duration-700 pointer-events-none"
         style={{
@@ -59,19 +71,18 @@ export const Avatar: React.FC<AvatarProps> = ({
         }}
       />
 
-      {/* GLB Avatar — Azure TTS + language-aware voice */}
+      {/* GLB Avatar — audio-driven lipsync via ref */}
       <GLBAvatar
+        ref={glbRef}
         glbUrl="/avatar.glb"
         mood={glbMood}
         isSpeaking={isSpeaking}
         language={language}
         cameraView={size === 'sm' ? 'head' : 'upper'}
         style={{ width: '100%', height: '100%' }}
-        ttsApiKey={ttsApiKey}
-        ttsRegion={ttsRegion}
       />
 
-      {/* Speaking pulse ring — UNCHANGED from original */}
+      {/* Speaking pulse ring */}
       <AnimatePresence>
         {isSpeaking && (
           <motion.div
@@ -84,7 +95,7 @@ export const Avatar: React.FC<AvatarProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Mood badge — UNCHANGED from original */}
+      {/* Mood badge */}
       <AnimatePresence>
         {(mood === 'thinking' || mood === 'listening') && (
           <motion.div
@@ -111,4 +122,6 @@ export const Avatar: React.FC<AvatarProps> = ({
       </AnimatePresence>
     </div>
   );
-};
+});
+
+Avatar.displayName = 'Avatar';
