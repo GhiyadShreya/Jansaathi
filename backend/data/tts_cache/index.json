@@ -1,0 +1,90 @@
+{
+  "choose_language\\en\\813ad76291e3bc4c6edf.mp3": {
+    "category": "choose_language",
+    "lang": "en",
+    "cache_key": "choose_language:en",
+    "text": "Please select your language. Hindi, English, Punjabi, or Gujarati.",
+    "created_at": "2026-04-07T15:52:12.820624+00:00",
+    "format": "mp3"
+  },
+  "welcome\\en\\59fd55690b113af7ac4f.mp3": {
+    "category": "welcome",
+    "lang": "en",
+    "cache_key": "welcome:en",
+    "text": "Hello! How can I help you today?",
+    "created_at": "2026-04-07T15:52:16.752960+00:00",
+    "format": "mp3"
+  },
+  "welcome\\hi\\246cd6f50a16967edd68.mp3": {
+    "category": "welcome",
+    "lang": "hi",
+    "cache_key": "welcome:hi",
+    "text": "नमस्ते! मैं आपकी कैसे मदद कर सकती हूँ?",
+    "created_at": "2026-04-07T15:52:20.178180+00:00",
+    "format": "mp3"
+  },
+  "welcome\\pa\\f4caef1a093b011c26e0.mp3": {
+    "category": "welcome",
+    "lang": "pa",
+    "cache_key": "welcome:pa",
+    "text": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡੀ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੀ ਹਾਂ?",
+    "created_at": "2026-04-07T15:52:23.980567+00:00",
+    "format": "mp3"
+  },
+  "welcome\\gu\\4926421652ce7f7f9dac.mp3": {
+    "category": "welcome",
+    "lang": "gu",
+    "cache_key": "welcome:gu",
+    "text": "નમસ્તે! હું આજે તમારી કેવી રીતે મદદ કરી શકું?",
+    "created_at": "2026-04-07T15:52:27.832000+00:00",
+    "format": "mp3"
+  },
+  "generic\\pa\\9a1bf3b01b7c38ca1239.mp3": {
+    "category": "generic",
+    "lang": "pa",
+    "cache_key": null,
+    "text": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡੀ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੀ ਹਾਂ?",
+    "created_at": "2026-04-07T16:03:14.186079+00:00",
+    "format": "mp3"
+  },
+  "chat_response\\pa\\9d05079b176dc46a1266.mp3": {
+    "category": "chat_response",
+    "lang": "pa",
+    "cache_key": "quick:pa:ਮੇਰੇ ਲਈ ਕਿਹੜੀਆਂ ਯੋਜਨਾਵਾਂ ਹਨ?",
+    "text": "ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ ਦੇ ਅਧਾਰ ਤੇ ਆਮ ਤੌਰ ਤੇ ਆਯੁਸ਼ਮਾਨ ਭਾਰਤ, ਪੀਐਮ ਕਿਸਾਨ ਅਤੇ ਪੋਸਟ ਮੈਟ੍ਰਿਕ ਸਕਾਲਰਸ਼ਿਪ ਵਰਗੀਆਂ ਯੋਜਨਾਵਾਂ ਲਾਭਦਾਇਕ ਹੋ ਸਕਦੀਆਂ ਹਨ। ਪੱਕੀ ਯੋਗਤਾ ਤੁਹਾਡੀ ਆਮਦਨ, ਰਾਜ, ਕੰਮ ਅਤੇ ਦਸਤਾਵੇਜ਼ਾਂ ਉੱਤੇ ਨਿਰਭਰ ਕਰੇਗੀ, ਇਸ ਲਈ ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਸਕੀਮ ਕਾਰਡ ਜ਼ਰੂਰ ਵੇਖੋ।",
+    "created_at": "2026-04-07T16:03:53.135875+00:00",
+    "format": "mp3"
+  },
+  "generic\\gu\\f27c708254709495a01d.mp3": {
+    "category": "generic",
+    "lang": "gu",
+    "cache_key": null,
+    "text": "નમસ્તે! હું આજે તમારી કેવી રીતે મદદ કરી શકું?",
+    "created_at": "2026-04-07T16:38:16.115130+00:00",
+    "format": "mp3"
+  },
+  "generic\\hi\\f2e86d80042163ff4b02.mp3": {
+    "category": "generic",
+    "lang": "hi",
+    "cache_key": null,
+    "text": "नमस्ते! मैं आपकी कैसे मदद कर सकती हूँ?",
+    "created_at": "2026-04-07T16:38:34.077984+00:00",
+    "format": "mp3"
+  },
+  "generic\\en\\404ea547494613debd1f.mp3": {
+    "category": "generic",
+    "lang": "en",
+    "cache_key": null,
+    "text": "Hello! How can I help you today?",
+    "created_at": "2026-04-07T16:38:47.009885+00:00",
+    "format": "mp3"
+  },
+  "chat_response\\en\\bb047883c0a92677263a.mp3": {
+    "category": "chat_response",
+    "lang": "en",
+    "cache_key": "quick:en:what schemes am i eligible for?",
+    "text": "Based on your profile, the most relevant options are usually Ayushman Bharat for health cover, PM-Kisan if you are a farmer, and Post-Matric Scholarship if you are studying. Open your profile and scheme cards to confirm the exact eligibility details for your state and income level.",
+    "created_at": "2026-04-07T17:00:47.942895+00:00",
+    "format": "mp3"
+  }
+}

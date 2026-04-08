@@ -1,10 +1,16 @@
 /**
  * GLBAvatar.tsx
  * Wraps the TalkingHead library to render a .glb avatar with
- * Azure TTS lipsync, eye blink, gestures, and moods.
+ * audio-driven lipsync (speakAudio), eye blink, gestures, and moods.
+ *
+ * LIPSYNC STRATEGY (Option 3 — audio-driven):
+ *   Instead of using TalkingHead's internal TTS (speakText), we receive
+ *   an AudioBuffer from our own tts.ts and call head.speakAudio().
+ *   The mouth motion is derived from the audio envelope itself so it works
+ *   the same way across English, Hindi, Punjabi, and Gujarati.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -13,31 +19,27 @@ import React, { useEffect, useRef, useState } from 'react';
 type AvatarMood = 'neutral' | 'happy' | 'thinking' | 'listening';
 type AvatarLanguage = 'en' | 'hi' | 'gu' | 'pa';
 
+export interface GLBAvatarHandle {
+  /** Feed an AudioBuffer + spoken text → avatar lip-syncs to it */
+  speakAudio: (audioBuffer: AudioBuffer, text: string, lang?: AvatarLanguage) => void;
+  /** Stop all speech immediately */
+  stopSpeech: () => void;
+  /** Resume TalkingHead's internal audio context after a user gesture */
+  resumeAudio: () => void;
+}
+
 interface GLBAvatarProps {
   glbUrl?: string;
   isSpeaking?: boolean;
-  speakText?: string;
   mood?: AvatarMood;
   gesture?: 'namaste' | 'wave' | 'nod' | null;
+  speakText?: string;
   cameraView?: 'upper' | 'full' | 'head';
   language?: AvatarLanguage;
   className?: string;
   style?: React.CSSProperties;
   onReady?: () => void;
-  ttsApiKey?: string;
-  ttsRegion?: string;
 }
-
-// ---------------------------------------------------------------------------
-// Azure voice map
-// ---------------------------------------------------------------------------
-
-const AZURE_VOICE_MAP: Record<AvatarLanguage, { ttsLang: string; ttsVoice: string }> = {
-  en: { ttsLang: 'en-IN', ttsVoice: 'en-IN-NeerjaNeural' },
-  hi: { ttsLang: 'hi-IN', ttsVoice: 'hi-IN-SwaraNeural' },
-  gu: { ttsLang: 'gu-IN', ttsVoice: 'gu-IN-DhwaniNeural' },
-  pa: { ttsLang: 'pa-IN', ttsVoice: 'pa-IN-OjasNeural'  },
-};
 
 // ---------------------------------------------------------------------------
 // TalkingHead lazy loader
@@ -56,47 +58,110 @@ function loadTalkingHead(): Promise<any> {
     TalkingHeadClass = mod.TalkingHead;
     return TalkingHeadClass;
   }).catch((err) => {
-    loadPromise = null; // allow retry on next mount
+    loadPromise = null;
     throw err;
   });
   return loadPromise;
+}
+
+function normalizeLipSyncLanguage(lang?: AvatarLanguage): AvatarLanguage {
+  if (lang === 'hi' || lang === 'gu' || lang === 'pa') return lang;
+  return 'en';
+}
+
+function buildSpeechCue(text: string, durationMs: number) {
+  const compact = text.replace(/\s+/g, ' ').trim();
+  return {
+    words: [compact || 'speech'],
+    wtimes: [0],
+    wdurations: [Math.max(1, Math.round(durationMs))],
+  };
+}
+
+function buildAmplitudeAnimation(audioBuffer: AudioBuffer) {
+  const sampleRate = audioBuffer.sampleRate;
+  const channelCount = audioBuffer.numberOfChannels;
+  const frameMs = 1000 / 12;
+  const frameSize = Math.max(1, Math.floor((sampleRate * frameMs) / 1000));
+  const frameCount = Math.max(1, Math.ceil(audioBuffer.length / frameSize));
+
+  const jawOpen: number[] = [];
+  const mouthClose: number[] = [];
+  const mouthFunnel: number[] = [];
+  const mouthPucker: number[] = [];
+  const dt = new Array(frameCount).fill(frameMs);
+
+  let previous = 0;
+
+  for (let frameIndex = 0; frameIndex < frameCount; frameIndex += 1) {
+    const start = frameIndex * frameSize;
+    const end = Math.min(audioBuffer.length, start + frameSize);
+    let sum = 0;
+    let count = 0;
+
+    for (let channel = 0; channel < channelCount; channel += 1) {
+      const data = audioBuffer.getChannelData(channel);
+      for (let i = start; i < end; i += 1) {
+        const sample = data[i] || 0;
+        sum += sample * sample;
+        count += 1;
+      }
+    }
+
+    const rms = count > 0 ? Math.sqrt(sum / count) : 0;
+    const boosted = Math.min(1, Math.pow(rms * 2.2, 0.95));
+    const attack = 0.3;
+    const release = 0.94;
+    const blend = boosted > previous ? attack : release;
+    const smoothed = previous * blend + boosted * (1 - blend);
+    previous = smoothed;
+
+    const gated = smoothed < 0.12 ? 0 : smoothed;
+    jawOpen.push(Math.min(0.32, gated * 0.46));
+    mouthClose.push(Math.max(0.52, 0.94 - gated * 0.22));
+    mouthFunnel.push(Math.min(0.1, gated * 0.06));
+    mouthPucker.push(Math.min(0.06, gated * 0.04));
+  }
+
+  return {
+    dt,
+    vs: {
+      jawOpen,
+      mouthClose,
+      mouthFunnel,
+      mouthPucker,
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export const GLBAvatar: React.FC<GLBAvatarProps> = ({
+export const GLBAvatar = forwardRef<GLBAvatarHandle, GLBAvatarProps>(({
   glbUrl       = '/avatar.glb',
   isSpeaking   = false,
-  speakText,
   mood         = 'neutral',
   gesture      = null,
+  speakText: _speakText = undefined,
   cameraView   = 'upper',
   language     = 'hi',
   className    = '',
   style        = {},
   onReady,
-  ttsApiKey    = '',
-  ttsRegion    = '',
-}) => {
+}, ref) => {
   const containerRef  = useRef<HTMLDivElement>(null);
   const headRef       = useRef<any>(null);
   const loadedRef     = useRef(false);
-  const prevSpeakText = useRef<string | undefined>(undefined);
   const prevGesture   = useRef<string | null>(null);
+  const pendingSpeechRef = useRef<{ audioBuffer: AudioBuffer; text: string } | null>(null);
 
-  // Refs so initHead always reads the latest prop values (avoids stale closure)
-  const ttsApiKeyRef  = useRef(ttsApiKey);
-  const ttsRegionRef  = useRef(ttsRegion);
   const languageRef   = useRef(language);
   const glbUrlRef     = useRef(glbUrl);
   const cameraViewRef = useRef(cameraView);
   const moodRef       = useRef(mood);
   const onReadyRef    = useRef(onReady);
 
-  ttsApiKeyRef.current  = ttsApiKey;
-  ttsRegionRef.current  = ttsRegion;
   languageRef.current   = language;
   glbUrlRef.current     = glbUrl;
   cameraViewRef.current = cameraView;
@@ -105,6 +170,86 @@ export const GLBAvatar: React.FC<GLBAvatarProps> = ({
 
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  const playSpeech = (audioBuffer: AudioBuffer, text: string, lang?: AvatarLanguage) => {
+    const head = headRef.current;
+    if (!head) return false;
+
+    const durationMs = audioBuffer.duration * 1000;
+    const cue = buildSpeechCue(text, durationMs);
+    const anim = buildAmplitudeAnimation(audioBuffer);
+    const lipsyncLang = normalizeLipSyncLanguage(lang ?? languageRef.current);
+
+    try {
+      head.stopSpeaking?.();
+      head.speakAudio({
+        audio: audioBuffer,
+        words: cue.words,
+        wtimes: cue.wtimes,
+        wdurations: cue.wdurations,
+        anim,
+      }, { isRaw: true, lipsyncLang });
+      return true;
+    } catch (err) {
+      console.warn('[GLBAvatar] speakAudio failed:', err);
+      return false;
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Expose imperative handle so Avatar.tsx can call speakAudio / stopSpeech
+  // ---------------------------------------------------------------------------
+
+  useImperativeHandle(ref, () => ({
+    speakAudio(audioBuffer: AudioBuffer, text: string, lang?: AvatarLanguage) {
+      if (!headRef.current || isLoading) {
+        pendingSpeechRef.current = { audioBuffer, text };
+        return;
+      }
+      pendingSpeechRef.current = null;
+      playSpeech(audioBuffer, text, lang);
+    },
+
+    stopSpeech() {
+      try { headRef.current?.stopSpeaking?.(); } catch (_) {}
+    },
+
+    resumeAudio() {
+      try {
+        const ctx = headRef.current?.audioCtx as AudioContext | undefined;
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+      } catch (_) {}
+    },
+  }));
+
+  // ---------------------------------------------------------------------------
+  // Resume TalkingHead's internal AudioContext on first user gesture
+  // Chrome blocks AudioContext.start() until a user gesture has occurred.
+  // TalkingHead stores its context at head.audioCtx — we resume it on click.
+  // ---------------------------------------------------------------------------
+
+  useEffect(() => {
+    const resume = () => {
+      const head = headRef.current;
+      if (!head) return;
+      try {
+        // TalkingHead exposes its AudioContext as head.audioCtx
+        const ctx = head.audioCtx as AudioContext | undefined;
+        if (ctx && ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+      } catch (_) {}
+    };
+
+    document.addEventListener('click', resume, { once: true });
+    document.addEventListener('touchend', resume, { once: true });
+    return () => {
+      document.removeEventListener('click', resume);
+      document.removeEventListener('touchend', resume);
+    };
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Init — runs once on mount
@@ -121,67 +266,44 @@ export const GLBAvatar: React.FC<GLBAvatarProps> = ({
         const THClass = await loadTalkingHead();
         if (cancelled) return;
 
-        const node        = containerRef.current!;
-        const apiKey      = ttsApiKeyRef.current;
-        const region      = ttsRegionRef.current;
-        const voiceConfig = AZURE_VOICE_MAP[languageRef.current] ?? AZURE_VOICE_MAP['hi'];
+        const node = containerRef.current!;
 
-        // ─────────────────────────────────────────────────────────────────────
-        // FIX: TalkingHead ALWAYS requires a ttsEndpoint in its constructor.
-        // It throws "You must provide some Google-compliant TTS Endpoint"
-        // if the field is missing or empty — even if you never call speakText().
-        //
-        // Strategy:
-        //   1. Azure key + region present → use Azure endpoint (full TTS + lipsync)
-        //   2. Otherwise → pass Google's public TTS URL with an empty key.
-        //      The constructor check passes; speech calls will fail silently,
-        //      but the 3D avatar still loads and renders normally.
-        // ─────────────────────────────────────────────────────────────────────
-        const ttsConfig =
-          apiKey && region
-            ? {
-                ttsEndpoint : `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`,
-                ttsApikey   : apiKey,
-              }
-            : {
-                // Satisfies TalkingHead's mandatory endpoint check.
-                // No key supplied → TTS requests fail gracefully; avatar still renders.
-                ttsEndpoint : 'https://texttospeech.googleapis.com/v1beta1/text:synthesize',
-                ttsApikey   : '',
-              };
-
+        // Dummy Google TTS endpoint — satisfies constructor check, never called
+        // since we use speakAudio() exclusively
         const head = new THClass(node, {
-          ...ttsConfig,
-          ttsLang            : voiceConfig.ttsLang,
-          ttsVoice           : voiceConfig.ttsVoice,
-          ttsRate            : 1.0,
-          cameraView         : cameraViewRef.current,
-          cameraRotateEnable : false,
-          avatarMood         : moodRef.current,
-          lipsyncLang        : 'en',
+          ttsEndpoint : 'https://texttospeech.googleapis.com/v1beta1/text:synthesize',
+          ttsApikey   : '',
+          ttsLang     : 'en-IN',
+          ttsVoice    : 'en-IN-Standard-A',
+          ttsRate     : 1.0,
+          cameraView  : cameraViewRef.current,
+          cameraRotateEnable: false,
+          avatarMood  : moodRef.current,
+          lipsyncLang : normalizeLipSyncLanguage(languageRef.current),
         });
 
         headRef.current = head;
 
-        // showAvatar in its own try/catch — a TTS warm-up error is non-fatal
         try {
           await head.showAvatar(
             {
-              url         : glbUrlRef.current,
-              body        : 'F',
-              ttsLang     : voiceConfig.ttsLang,
-              ttsVoice    : voiceConfig.ttsVoice,
-              lipsyncLang : 'en',
+              url        : glbUrlRef.current,
+              body       : 'F',
+              lipsyncLang: normalizeLipSyncLanguage(languageRef.current),
             },
             (_ev: ProgressEvent) => {}
           );
         } catch (avatarErr: any) {
-          // TTS warm-up failed but mesh may still be visible — non-fatal
-          console.warn('[GLBAvatar] showAvatar partial error (TTS warm-up may have failed):', avatarErr);
+          console.warn('[GLBAvatar] showAvatar partial error:', avatarErr);
         }
 
         if (cancelled) return;
         setIsLoading(false);
+        if (pendingSpeechRef.current) {
+          const pending = pendingSpeechRef.current;
+          pendingSpeechRef.current = null;
+          playSpeech(pending.audioBuffer, pending.text, languageRef.current);
+        }
         onReadyRef.current?.();
 
       } catch (err: any) {
@@ -199,6 +321,7 @@ export const GLBAvatar: React.FC<GLBAvatarProps> = ({
       try { headRef.current?.dispose?.(); } catch (_) {}
       headRef.current   = null;
       loadedRef.current = false;
+      pendingSpeechRef.current = null;
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -222,19 +345,7 @@ export const GLBAvatar: React.FC<GLBAvatarProps> = ({
   }, [mood, isLoading]);
 
   // ---------------------------------------------------------------------------
-  // Speak text
-  // ---------------------------------------------------------------------------
-
-  useEffect(() => {
-    const head = headRef.current;
-    if (!head || isLoading) return;
-    if (!speakText || speakText === prevSpeakText.current) return;
-    prevSpeakText.current = speakText;
-    try { head.speakText(speakText); } catch (_) {}
-  }, [speakText, isLoading]);
-
-  // ---------------------------------------------------------------------------
-  // Gestures
+  // Gestures — use speakAudio with a silent buffer so mouth stays closed
   // ---------------------------------------------------------------------------
 
   useEffect(() => {
@@ -243,9 +354,10 @@ export const GLBAvatar: React.FC<GLBAvatarProps> = ({
     if (!gesture || gesture === prevGesture.current) return;
     prevGesture.current = gesture;
     try {
-      if (gesture === 'namaste')     head.speakText('Namaste! 🙏');
-      else if (gesture === 'wave')   head.speakText('Hello! 👋');
-      else if (gesture === 'nod')    head.speakText('Yes! ✅');
+      // Gestures just trigger an animation/mood — no TTS needed
+      if (gesture === 'namaste')   head.setMood?.('happy');
+      else if (gesture === 'wave') head.setMood?.('happy');
+      else if (gesture === 'nod')  head.setMood?.('neutral');
     } catch (_) {}
   }, [gesture, isLoading]);
 
@@ -276,4 +388,6 @@ export const GLBAvatar: React.FC<GLBAvatarProps> = ({
       )}
     </div>
   );
-};
+});
+
+GLBAvatar.displayName = 'GLBAvatar';
