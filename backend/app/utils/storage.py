@@ -12,8 +12,11 @@ DATA_DIR.mkdir(exist_ok=True)
 
 def _read_file(filename: str) -> Any:
     path = DATA_DIR / filename
+
     if not path.exists():
-        return None
+        _write_file(filename, {})  # create empty file
+        return {}
+
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -51,6 +54,7 @@ def get_notifications() -> list:
 
 def save_notifications(notifications: list) -> None:
     _write_file("notifications.json", notifications)
+    print("Saving chat history...")
 
 
 def get_chat_history(user_id: str = "default") -> list:

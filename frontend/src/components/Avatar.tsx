@@ -39,9 +39,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     mood === 'happy'     ? 'happy'     :
     'neutral';
 
-  // Azure credentials — read once here so GLBAvatar stays generic
-  const ttsApiKey = import.meta.env.VITE_AZURE_TTS_KEY  ?? '';
-  const ttsRegion = import.meta.env.VITE_AZURE_TTS_REGION ?? '';
+
 
   return (
     <div
@@ -67,8 +65,7 @@ export const Avatar: React.FC<AvatarProps> = ({
         language={language}
         cameraView={size === 'sm' ? 'head' : 'upper'}
         style={{ width: '100%', height: '100%' }}
-        ttsApiKey={ttsApiKey}
-        ttsRegion={ttsRegion}
+      
       />
 
       {/* Speaking pulse ring — UNCHANGED from original */}

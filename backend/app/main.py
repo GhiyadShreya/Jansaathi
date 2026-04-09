@@ -1,13 +1,14 @@
 """
 JanSaathi AI - FastAPI Backend
-Handles: AI chat, scheme matching, notifications, profile management
+Handles: AI chat, scheme matching, document verification, notifications, profile management
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 import uvicorn
+from app.api import chat, schemes, notifications, profile, health, verify
 
-from app.api import chat, schemes, notifications, profile, health
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(
     title="JanSaathi AI Backend",
@@ -15,21 +16,20 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "*"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Routers
-app.include_router(health.router, prefix="/api", tags=["Health"])
-app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
-app.include_router(schemes.router, prefix="/api/schemes", tags=["Schemes"])
-app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
-app.include_router(profile.router, prefix="/api/profile", tags=["Profile"])
+app.include_router(health.router,         prefix="/api",              tags=["Health"])
+app.include_router(chat.router,           prefix="/api/chat",         tags=["Chat"])
+app.include_router(schemes.router,        prefix="/api/schemes",      tags=["Schemes"])
+app.include_router(verify.router,         prefix="/api/verify",       tags=["Verify"])
+app.include_router(notifications.router,  prefix="/api/notifications", tags=["Notifications"])
+app.include_router(profile.router,        prefix="/api/profile",      tags=["Profile"])
 
 
 @app.get("/")
