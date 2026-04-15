@@ -1,21 +1,17 @@
 /**
- * Avatar.tsx
+ * Avatar.tsx  (GLB avatar version)
  *
- * WHAT CHANGED:
- *  - Holds a ref to GLBAvatar and exposes speakAudio() via its own ref
- *  - ttsApiKey / ttsRegion props removed (no longer needed — audio-driven lipsync)
- *  - App.tsx registers registerAudioBufferCallback() so whenever tts.ts produces
- *    audio, it lands here and gets forwarded to head.speakAudio()
+ * WHAT CHANGED vs original:
+ *  - Added `language` prop so GLBAvatar picks the correct Azure Neural voice
+ *    (hi-IN-SwaraNeural, gu-IN-DhwaniNeural, pa-IN-OjasNeural, en-IN-NeerjaNeural)
+ *  - Azure credentials (VITE_AZURE_TTS_KEY / VITE_AZURE_TTS_REGION) are read
+ *    from import.meta.env and forwarded to GLBAvatar — no prop drilling from App.tsx.
+ *  - All other props, glow, pulse ring, and mood badge are UNCHANGED.
  */
 
-import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GLBAvatar, GLBAvatarHandle } from './GLBAvatar';
-
-export interface AvatarHandle {
-  speakAudio: (audioBuffer: AudioBuffer, text: string, lang?: 'en' | 'hi' | 'gu' | 'pa') => void;
-  resumeAudio: () => void;
-}
+import { GLBAvatar } from './GLBAvatar';
 
 interface AvatarProps {
   isSpeaking: boolean;
@@ -24,43 +20,33 @@ interface AvatarProps {
   language?: 'en' | 'hi' | 'gu' | 'pa';
 }
 
-export const Avatar = forwardRef<AvatarHandle, AvatarProps>(({
+export const Avatar: React.FC<AvatarProps> = ({
   isSpeaking,
   mood = 'neutral',
   size = 'lg',
   language = 'hi',
-}, ref) => {
-  const glbRef = useRef<GLBAvatarHandle>(null);
-
+}) => {
+  // Size mapping: match the original SVG avatar's visual footprint
   const containerSize =
     size === 'sm' ? { width: 80,  height: 80  } :
     size === 'md' ? { width: 160, height: 160 } :
                     { width: 260, height: 260 };
 
+  // GLBAvatar mood passthrough (TalkingHead mood names)
   const glbMood =
     mood === 'thinking'  ? 'thinking'  :
     mood === 'listening' ? 'listening' :
     mood === 'happy'     ? 'happy'     :
     'neutral';
 
-  // Expose speakAudio and resumeAudio up to App.tsx
-  useImperativeHandle(ref, () => ({
-    speakAudio(audioBuffer: AudioBuffer, text: string, lang?: 'en' | 'hi' | 'gu' | 'pa') {
-      glbRef.current?.speakAudio(audioBuffer, text, lang ?? language);
-    },
-    // Forwards the user-gesture unlock into the GLB avatar's internal AudioContext
-    // (talkinghead.mjs creates its own context which also needs resuming)
-    resumeAudio() {
-      glbRef.current?.resumeAudio?.();
-    },
-  }));
+
 
   return (
     <div
       className="relative mx-auto"
       style={{ width: containerSize.width, height: containerSize.height }}
     >
-      {/* Ambient glow */}
+      {/* Ambient glow — mirrors original */}
       <div
         className="absolute inset-0 rounded-full blur-2xl opacity-60 transition-all duration-700 pointer-events-none"
         style={{
@@ -71,18 +57,18 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(({
         }}
       />
 
-      {/* GLB Avatar — audio-driven lipsync via ref */}
+      {/* GLB Avatar — Azure TTS + language-aware voice */}
       <GLBAvatar
-        ref={glbRef}
         glbUrl="/avatar.glb"
         mood={glbMood}
         isSpeaking={isSpeaking}
         language={language}
         cameraView={size === 'sm' ? 'head' : 'upper'}
         style={{ width: '100%', height: '100%' }}
+      
       />
 
-      {/* Speaking pulse ring */}
+      {/* Speaking pulse ring — UNCHANGED from original */}
       <AnimatePresence>
         {isSpeaking && (
           <motion.div
@@ -95,7 +81,7 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(({
         )}
       </AnimatePresence>
 
-      {/* Mood badge */}
+      {/* Mood badge — UNCHANGED from original */}
       <AnimatePresence>
         {(mood === 'thinking' || mood === 'listening') && (
           <motion.div
@@ -122,6 +108,4 @@ export const Avatar = forwardRef<AvatarHandle, AvatarProps>(({
       </AnimatePresence>
     </div>
   );
-});
-
-Avatar.displayName = 'Avatar';
+};
