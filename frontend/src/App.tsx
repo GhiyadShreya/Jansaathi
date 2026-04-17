@@ -3,6 +3,7 @@ import { AnimatePresence } from 'motion/react';
 
 import { GenieIntro } from './components/GenieIntro';
 import { LanguageSelect } from './components/LanguageSelect';
+import { AuthScreen } from './components/AuthScreen';
 import { ActionSelect } from './components/ActionSelect';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
@@ -21,7 +22,14 @@ export default function App() {
   const chat = useChat(app.profile, app.language);
 
   if (app.appStep === 'genie') return <GenieIntro onComplete={() => app.setAppStep('language')} />;
-  if (app.appStep === 'language') return <LanguageSelect onSelect={app.handleLanguageSelect} />;
+  if (app.appStep === 'language') return <LanguageSelect onSelect={(lang) => {
+    app.setLanguage(lang);
+    app.setAppStep('auth');
+  }} />;
+  if (app.appStep === 'auth') return <AuthScreen language={app.language} onLogin={(phone) => {
+    app.setProfile({ ...app.profile, phone });
+    app.setAppStep('action');
+  }} />;
   if (app.appStep === 'action') return <ActionSelect language={app.language} onSelect={app.handleActionSelect} />;
 
   return (

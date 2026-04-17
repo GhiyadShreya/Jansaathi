@@ -27,11 +27,18 @@ export const VerifyTab: React.FC<VerifyTabProps> = ({ language, profile, setActi
   const [isVerifying, setIsVerifying] = useState(false);
   const [result, setResult] = useState<{ valid: boolean; reason: string } | null>(null);
 
+  const digilockerLabels: Record<Language, string> = {
+    en: 'OR verify with DigiLocker',
+    hi: 'या DigiLocker से सत्यापित करें',
+    pa: 'ਜਾਂ DigiLocker ਨਾਲ ਪ੍ਰਮਾਣਿਤ ਕਰੋ',
+    gu: 'અથવા DigiLocker થી ચકાસો',
+  };
+
   const handleVerify = async () => {
     if (!selectedScheme || profile.documents.length === 0) return;
     setIsVerifying(true);
     const docName = profile.documents[0] || 'Aadhaar Card';
-    const res = await verifyDocument(docName, selectedScheme);
+    const res = await verifyDocument(docName, selectedScheme, language);
     setResult(res);
     setIsVerifying(false);
     speak(res.reason, language);
@@ -114,26 +121,39 @@ export const VerifyTab: React.FC<VerifyTabProps> = ({ language, profile, setActi
           )}
         </div>
 
-        {/* Verify button */}
-        <button
-          onClick={handleVerify}
-          disabled={isLoading || profile.documents.length === 0}
-          className="w-full py-4 rounded-2xl font-black text-white text-base transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: isLoading ? '#9CA3AF' : 'linear-gradient(135deg, #059669, #10B981)', fontFamily: "'Baloo 2', cursive" }}
-        >
-          {isLoading ? (
-            <>
-              <motion.div
-                className="w-5 h-5 rounded-full border-2 border-white/40 border-t-white"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-              />
-              {language === 'hi' ? 'जाँच हो रही है...' : 'Verifying...'}
-            </>
-          ) : (
-            <><ShieldCheck size={20} /> {language === 'hi' ? 'सत्यापित करें' : 'Verify Now'}</>
-          )}
-        </button>
+        {/* Action buttons */}
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={handleVerify}
+            disabled={isLoading || profile.documents.length === 0}
+            className="w-full py-4 rounded-2xl font-black text-white text-base transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            style={{ background: isLoading ? '#9CA3AF' : 'linear-gradient(135deg, #059669, #10B981)', fontFamily: "'Baloo 2', cursive" }}
+          >
+            {isLoading ? (
+              <>
+                <motion.div
+                  className="w-5 h-5 rounded-full border-2 border-white/40 border-t-white"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                />
+                {language === 'hi' ? 'जाँच हो रही है...' : 'Verifying...'}
+              </>
+            ) : (
+              <><ShieldCheck size={20} /> {language === 'hi' ? 'सत्यापित करें' : 'Verify Now'}</>
+            )}
+          </button>
+          
+          <a
+            href="https://www.digilocker.gov.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold transition-all hover:opacity-90 cursor-pointer shadow-sm border border-[#173F5F]"
+            style={{ background: 'linear-gradient(to right, #0F2027, #203A43, #2C5364)', color: 'white', fontFamily: "'Baloo 2', cursive" }}
+          >
+            <ShieldCheck size={18} className="text-blue-400" />
+            {digilockerLabels[language]}
+          </a>
+        </div>
 
         {/* Result */}
         <AnimatePresence>

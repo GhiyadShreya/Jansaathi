@@ -1,5 +1,4 @@
 export interface UserProfile {
-  gender: any;
   name: string;
   age: string;
   occupation: string;
@@ -7,6 +6,8 @@ export interface UserProfile {
   income: string;
   category: string;
   documents: string[];
+  gender?: string;
+  phone?: string;
 }
 
 export interface Scheme {
@@ -16,6 +17,7 @@ export interface Scheme {
   eligibility: string;
   benefits: string;
   category: string;
+  required_documents: string[];
 }
 
 export interface Notification {
@@ -29,7 +31,7 @@ export interface Notification {
 
 export type Language = 'en' | 'hi' | 'pa' | 'gu';
 
-export type AppStep = 'genie' | 'language' | 'action' | 'dashboard';
+export type AppStep = 'genie' | 'language' | 'auth' | 'action' | 'dashboard';
 
 export const LANGUAGES: Record<Language, { name: string; native: string; ttsLang: string; greeting: string; tagline: string }> = {
   en: { name: 'English', native: 'English', ttsLang: 'en-IN', greeting: 'Hello! How can I help you today?', tagline: 'Your Government Companion' },
@@ -54,7 +56,8 @@ export const DEMO_SCHEMES: Scheme[] = [
     description: "Direct income support of ₹6,000/year to small and marginal farmers.",
     eligibility: "Farmers with less than 2 hectares land",
     benefits: "₹6,000/year in 3 installments",
-    category: "Agriculture"
+    category: "Agriculture",
+    required_documents: ["Aadhaar Card", "Land Documents"]
   },
   {
     id: "ayushman",
@@ -62,7 +65,8 @@ export const DEMO_SCHEMES: Scheme[] = [
     description: "Health coverage of ₹5 lakh per family per year for secondary and tertiary care.",
     eligibility: "BPL families as per SECC data",
     benefits: "₹5 lakh health cover",
-    category: "Health"
+    category: "Health",
+    required_documents: ["Aadhaar Card", "Ration Card"]
   },
   {
     id: "scholarship",
@@ -70,7 +74,8 @@ export const DEMO_SCHEMES: Scheme[] = [
     description: "Financial assistance for students from reserved categories studying at post-matric level.",
     eligibility: "SC/ST/OBC students, income below ₹2.5L",
     benefits: "Tuition + maintenance allowance",
-    category: "Education"
+    category: "Education",
+    required_documents: ["Aadhaar Card", "Income Certificate", "Caste Certificate"]
   },
   {
     id: "ujjwala",
@@ -78,7 +83,8 @@ export const DEMO_SCHEMES: Scheme[] = [
     description: "Free LPG connection to women from BPL households.",
     eligibility: "BPL women, no existing LPG",
     benefits: "Free LPG connection + cylinder",
-    category: "Energy"
+    category: "Energy",
+    required_documents: ["Aadhaar Card", "Ration Card", "BPL Certificate"]
   },
   {
     id: "mudra",
@@ -86,7 +92,8 @@ export const DEMO_SCHEMES: Scheme[] = [
     description: "Collateral-free loans up to ₹10 lakh for micro and small enterprises.",
     eligibility: "Small business owners, entrepreneurs",
     benefits: "Loans ₹50K – ₹10L",
-    category: "Business"
+    category: "Business",
+    required_documents: ["Aadhaar Card", "PAN Card", "Business Plan"]
   }
 ];
 

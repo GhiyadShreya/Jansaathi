@@ -79,11 +79,54 @@ export async function getMatchedSchemes(
 export async function verifyDocument(
   doc_name: string,
   scheme_title: string,
+  language: Language,
 ): Promise<{ valid: boolean; reason: string }> {
   try {
-    return await post<{ valid: boolean; reason: string }>('/verify/', { doc_name, scheme_title });
+    return await post<{ valid: boolean; reason: string }>('/verify/', { doc_name, scheme_title, language });
   } catch (e) {
     console.error('verifyDocument error:', e);
     return { valid: false, reason: 'Could not verify the document at this time. Please try again.' };
+  }
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+export async function sendOtp(phone: string): Promise<{ success: boolean; message: string }> {
+  try {
+    return await post<{ success: boolean; message: string }>('/auth/send-otp', { phone });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to send OTP.';
+    return { success: false, message };
+  }
+}
+
+export async function verifyOtp(phone: string, otp: string): Promise<{ success: boolean; message: string }> {
+  try {
+    return await post<{ success: boolean; message: string }>('/auth/verify-otp', { phone, otp });
+  } catch (e) {
+    // Extract detail from FastAPI's HTTPException
+    const message = e instanceof Error && e.message.includes('detail') ? JSON.parse(e.message.split('): ')[1]).detail : 'OTP verification failed.';
+    return { success: false, message };
+  }
+}
+
+// ── OCR ───────────────────────────────────────────────────────────────────────
+
+export async function verifyDocumentOCR(
+  file: File
+): Promise<{ success: boolean; doc_type: 'aadhaar' | 'income' | 'unknown'; text: string; error?: string }> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await fetch(`${BASE_URL}/verify/ocr`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error(`OCR verification failed (${res.status})`);
+    return res.json();
+  } catch (e) {
+    console.error('verifyDocumentOCR error:', e);
+    return { success: false, doc_type: 'unknown', text: '', error: 'Could not process the document.' };
   }
 }

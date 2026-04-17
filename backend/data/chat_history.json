@@ -1,0 +1,132 @@
+{
+  "default": [
+    {
+      "role": "user",
+      "text": "Hello"
+    },
+    {
+      "role": "ai",
+      "text": "**Namaste!**\n\nI'm Saathi, your assistant for Indian government schemes. How can I help you today?\n\n**Your Profile:**\n- Name: Test User\n- Age: 30\n- State: Maharashtra\n- Income: 50,000 per annum\n- Occupation: Teacher\n- Category: General\n\nPlease let me know about the type of scheme or information you're looking for. I'll be happy to assist you!"
+    },
+    {
+      "role": "user",
+      "text": "Hello"
+    },
+    {
+      "role": "ai",
+      "text": "**Namaste!**\nI'm Saathi, your assistant for Indian government schemes. I'm here to help you find the best schemes for your needs.\n\nYou are a 30-year-old teacher from Maharashtra with an income of ₹50,000. Which type of scheme are you interested in?\n\n**Choose from:**\n\n1. Health Insurance\n2. Education Benefits\n3. Pension Schemes\n4. Housing Schemes\n5. Other (please specify)\n\nLet me know, and I'll guide you through the process."
+    },
+    {
+      "role": "user",
+      "text": "What schemes am I eligible for?"
+    },
+    {
+      "role": "ai",
+      "text": "**Eligible Schemes for R, a 45-year-old SC Student from Uttarakhand**\n\nConsidering your age, occupation, income, and category, here are some government schemes you may be eligible for:\n\n### Education Schemes\n\n* **Scholarship for SC Students**: You may be eligible for scholarships under the Central Sector Scheme of Scholarship for College and University Students.\n* **National Scholarship Portal (NSP)**: NSP offers scholarships for students from SC communities, including tuition fee waivers and maintenance allowance.\n\n### Health Schemes\n\n* **Ayushman Bharat Yojana**: As a SC student, you may be eligible for free hospitalization and treatment under Ayushman Bharat Yojana.\n* **Modi Care Health Card**: You may be eligible for a free health insurance card under the Modi Care Health Card scheme.\n\n### Income Support Schemes\n\n* **National Social Assistance Programme (NSAP)**: As a student from an SC family, you may be eligible for pension and other benefits under NSAP.\n* **Uttarakhand State Government Schemes**: You may be eligible for state-specific schemes, such as the Uttarakhand Rajya Kosh (State Fund) for SC students.\n\n### Other Schemes\n\n* **Pradhan Mantri Awas Yojana (PMAY)**: You may be eligible for a subsidy on home loans under PMAY.\n* **Pradhan Mantri Jan Dhan Yojana (PMJDY)**: You may be eligible for a free basic bank account with an overdraft facility under PMJDY.\n\n### Required Documents\nTo apply for these schemes, you will need to provide documents such as:\n\n* **Caste Certificate**: Proof of your SC status\n* **Income Certificate**: Proof of your family income\n* **Aadhaar Card**: Proof of identity and address\n* **Student ID**: Proof of your student status\n\nPlease note that the eligibility criteria and required documents may vary for each scheme. It is recommended to check the official websites of the schemes or contact the relevant authorities for more information.\n\n**Stay tuned for more updates!**"
+    },
+    {
+      "role": "user",
+      "text": "How to apply for Ayushman Bharat?"
+    },
+    {
+      "role": "ai",
+      "text": "**Ayushman Bharat Scheme**\n\nAyushman Bharat is a government-funded health insurance scheme that provides financial protection to families against hospitalization expenses.\n\n**Eligibility**\n\nAs a Student from Uttarakhand with an annual income of ₹13,46,687 and belonging to the SC category, you are eligible for Ayushman Bharat.\n\n**Documents Required**\n\n* **Ration Card or BPL Card**: Proof of your Below Poverty Line (BPL) status\n* **Income Certificate**: Certificate from the Tehsildar or a Gazetted Officer, stating your annual income\n* **Caste Certificate**: Certificate from the State Government, stating your SC category\n* **Aadhaar Card**: Unique Identity Number\n\n**Application Process**\n\n1. **Visit the Ayushman Bharat Website**: [www.sehatregister.com](http://www.sehatregister.com) or [www.amarujala.com/ayushman-bharat](http://www.amarujala.com/ayushman-bharat)\n2. **Fill the Online Application Form**: Provide the required details and upload the documents\n3. **Get a Unique Health ID (UHID)**: After submitting the form, you will receive a UHID\n4. **Link Mobile Number and Email ID**: To receive SMS and email updates on your application status\n5. **Visit the nearest Ayushman Bharat Centre**: For biometric verification and other necessary procedures\n6. **Get a Health Insurance Card**: Once your application is approved, you will receive a health insurance card\n\n**Benefits**\n\n* **Free Hospitalization**: Up to ₹5,00,000 per family per year\n* **Cashless Benefits**: No need to pay hospital bills, as the insurance company will settle the expenses directly with the hospital\n\n**Contact Information**\n\n* **Ayushman Bharat Helpline**: 14555 (toll-free)\n* **Uttarakhand Government Website**: [www.uk.gov.in](http://www.uk.gov.in)\n\nPlease note that the application process may vary based on the state government's instructions. It's always a good idea to check with the local authorities or the Ayushman Bharat helpline for the latest information."
+    },
+    {
+      "role": "user",
+      "text": "ਮੇਰੇ ਲਈ ਕਿਹੜੀਆਂ ਯੋਜਨਾਵਾਂ ਹਨ?"
+    },
+    {
+      "role": "ai",
+      "text": "**ਤੁਹਾਡੇ ਲਈ ਵੱਖ-ਵੱਖ ਯੋਜਨਾਵਾਂ**\n\nਤੁਸੀਂ ਉੱਤਰਾਖੰਡ ਦੇ ਰਹਿੰਦੇ ਹੋ, ਹਰਿਤ ਕਿਸਾਨ ਪੁਲਿਸ ਯੋਜਨਾ ਦੇ ਪਿਛੋਕੜ ਦੇ ਸ਼ਾਖਾ ਤੋਂ ਆਉਂਦੇ ਹੋ ਅਤੇ ਸ਼੍ਰੇਣੀ SC ਦੇ ਹੋ, ਤਾਂ ਇਹ ਕੁਝ ਯੋਜਨਾਵਾਂ ਤੁਹਾਡੇ ਲਈ ਲਾਭਦਾਇਕ ਹੋ ਸਕਦੀਆਂ ਹਨ:\n\n### 1. **ਜੈਕਾਰਟ ਕਾਰਕੁਨ ਯੋਜਨਾ (Jawaharlal Nehru National Urban Renewal Mission)**\n\nਇੱਕ ਮਹੱਤਵਪੂਰਨ ਯੋਜਨਾ ਜੋ ਨਗਰਪਾਲਿਕਾਵਾਂ ਲਈ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਨਵੀਆਂ ਸਫਲਤਾਵਾਂ ਦੀ ਪਰਵਰਿਸ਼ ਕਰਦੀ ਹੈ, ਨਕਲੀ ਪ੍ਰਦੂਸ਼ਣ ਨੂੰ ਘਟਾਉਂਦੀ ਹੈ ਅਤੇ ਹੋਰ ਪ੍ਰਯੋਜਨਾਂ ਨੂੰ ਵਿਕਸਿਤ ਕਰਦੀ ਹੈ।\n\n### 2. **ਸਕਾਈ ਸਕੈਮ (Sampoorna Krishi Vikas Yojana)**\n\nਕਿਸਾਨਾਂ ਦੀ ਮਦਦ ਕਰਨ ਲਈ ਇੱਕ ਪ੍ਰਸ਼ਾਸਨਿਕ ਯੋਜਨਾ ਜੋ ਖੇਤੀ ਦੇ ਖੇਤਰ ਵਿੱਚ ਸੁਧਾਰ ਲਿਆਉਂਦੀ ਹੈ ਅਤੇ ਸਮਾਜਿਕ ਸੁਧਾਰ ਪ੍ਰਣਾਲੀ ਦੇ ਲਾਭਾਂ ਨੂੰ ਵਧਾਉਂਦੀ ਹੈ।\n\n### 3. **ਪਰਿਵਾਰ ਭਲਾਈ ਮੰਡਲ (Pradhan Mantri Awas Yojana - Urban)**\n\nਨਗਰਪਾਲਿਕਾਵਾਂ ਦੇ ਕੀਮਤੀ ਅਤੇ ਸੁਸਤ ਮਕਾਨਾਂ ਲਈ ਇੱਕ ਯੋਜਨਾ ਜੋ ਗਰੀਬ ਪਰਿਵਾਰਾਂ ਨੂੰ ਹਸਤਾਖ"
+    },
+    {
+      "role": "user",
+      "text": "मारा माटे कई योजनाओ छे?"
+    },
+    {
+      "role": "ai",
+      "text": "આપને મળવામાં આવતી કેટલીક મહત્વપૂર્ણ યોજનાઓ નીચે મુજબ છે:\n\n### પ્રાથમિક યોજનાઓ\n\n* **અટલ જન જનાર્ય યોજના (એએજેજી)**: તમામ રાજ્યોમાં આવકની વિરૂધાત્મકતા પૂરી કરવા માટે આપેલી આ યોજના દ્વારા તમામ ભારતીય નાગરિકોને ૨૦ કિલોગ્રામ ચોખા અને ૧ કિલોગ્રામ ચણા માટે ૧૦ રૂપિયા પ્રતિ કિલોગ્રામ કે જે ૫ કિલોગ્રામ ચોખા માટે ૨૦ રૂપિયા છે, વગેરે આપી શકાય છે.\n* **સહજ ભૂલભૂલય યોજના (એસબીએમ)**: આ યોજના દ્વારા પાકા કે ખાલી ભૂમિને સોખા માટે કોતરાતા વાળા સાધનો માટે વિતરિત કરવામાં આવે છે.\n\n### નાના વ્યવસાયીઓ માટે યોજનાઓ\n\n* **પરિયોજના શિયાળ ખેતી (પીકેએસ)**: આ યોજના દ્વારા નાના વ્યવસાયીઓને ખેતી કરવા માટે સહાય આપવામાં આવે છે.\n* **ખેડૂત ક્લબ યોજના (કેસીસી)**: આ યોજના દ્વારા નાન"
+    },
+    {
+      "role": "user",
+      "text": "मारा माटे कई योजनाओ छे?"
+    },
+    {
+      "role": "ai",
+      "text": "नमस्ते R दा, \n\nતમારા પ્રમાણેના વિવરણા પ્રમાણે, તમે એક વિદ્યાર્થી છો જેમણે સ્કોલરશિપ મેળવી છે. તમારા વર્ગની સાથે અને તમારા વર્ગની આધારે તમને પસંદ કરેલી કેટલીક મહત્વપૂર્ણ યોજનાઓ નીચે મુજબ છે:\n\n### પ્રાથમિક યોજનાઓ\n\n*   **પ્રાથમિક શિક્ષણ પર મદદ (ઇન્ટીફ નાણા)**: આ યોજના અનુસાર, તમે 100 લાખ કરતા વધુ વર્ષના વર્ગમાંના વિદ્યાર્થીઓને શિક્ષાની ફી દાખલ કરવાની મદદ કરી શકો છો. આ યોજનામાં મુખ્યત્વે આયુવની વિદ્યામાં અને વ્યાવસાયિક શિક્ષણ માટે મદદ મળે છે.\n*   **ઉચ્ચ શિક્ષણ પર મદદ (એમએસબી નાણા)**: આ યોજના અનુસાર, તમે ઉચ્ચ શિક્ષણ માટે 2 લાખ કરતા વધુ વર્ષના વર્ગમાંના વિદ્યાર્થીઓને શિક્ષાની ફી દાખલ કરવાની મદદ કરી શકો છો.\n*   **જંગલી અવાજના વિદ્યાર્થીઓને શિક્ષા (એસએસ"
+    },
+    {
+      "role": "user",
+      "text": "ਕਿਸਾਨ ਸਨਮਾਨ ਨਿਧੀ ਬਾਰੇ"
+    },
+    {
+      "role": "ai",
+      "text": "ਕਿਸਾਨ ਸਨਮਾਨ ਨਿਧੀ ਇੱਕ ਭਾਰਤ ਸਰਕਾਰ ਦਾ ਵੈਲਫੇਅਰ ਸਕੀਮ ਹੈ ਜੋ ਕਿਸਾਨਾਂ ਨੂੰ ਆਪਣੀ ਮਿਹਨਤ ਨੂੰ ਮਾਨਤਾ ਦਿੰਦੀ ਹੈ।\n\n**ਸਕੀਮ ਦੇ ਮੁੱਖ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਹਨ:**\n\n* ਸਕੀਮ ਦੇ ਤਹਿਤ ਸਾਰੇ ਕਿਸਾਨਾਂ ਨੂੰ 6,000 ਰੁਪਏ ਦਾ ਇੱਕ-ਸਾਲਾ ਭੋਗ ਦਿੱਤਾ ਜਾਵੇਗਾ।\n* ਇਸ ਸਕੀਮ ਦਾ ਲਾਭ ਉਹ ਕਿਸਾਨਾਂ ਨੂੰ ਮਿਲੇਗਾ ਜਿਨ੍ਹਾਂ ਦਾ ਕੁਲ ਖੇਤੀਬਾੜੀ ਕੀਮਤ 1.5 ਕਰੋੜ ਤੋਂ ਘੱਟ ਹੋਵੇ।\n* ਇਹ ਸਕੀਮ ਉਹ ਕਿਸਾਨਾਂ ਨੂੰ ਲਾਭ ਪਹੁੰਚਾਉਣ ਲਈ ਹੈ ਜੋ ਆਪਣਾ ਇੰਨਾਮ ਕਮਜ਼ੋਰ ਹੈ।\n\n**ਕਿਵੇਂ ਸਕੀਮ ਦੇ ਲਾਭ ਪ੍ਰਾਪਤ ਕਰੋ:**\n\n1. ਸਕੀਮ ਦਾ ਲਾਭ ਹਾਸਲ ਕਰਨ ਲਈ, ਤੁਸੀਂ ਕੇਂਦਰ ਸਰਕਾਰ ਦੀ ਵੈੱਬਸਾਈਟ 'https://pmkisan.gov.in/' ਤੇ ਜਾ ਕੇ ਰਜਿਸਟਰ ਹੋਣਾ ਹੋਵੇਗਾ।\n2. ਜਦੋਂ ਤੁਸੀਂ ਰਜਿਸਟਰ ਹੋ ਜਾਵੋਗੇ, ਤਾਂ ਤੁਹਾਨੂੰ ਇੱਕ ਕਾਰਡ ਦਿੱਤਾ ਜਾਵੇਗਾ ਜਿਸ ਤੇ ਤੁਹਾਡੇ ਲਈ ਸਕੀਮ ਦੇ ਲਾਭ ਦੀ ਜਾਂਚ ਕੀਤੀ ਜਾਵੇਗੀ।\n\n**ਨੋਟ: ਸਕੀਮ ਦੀਆਂ ਜ਼ਰੂਰੀ ਜਾਣਕਾਰੀਆਂ ਲਈ, ਤੁਹਾਨੂੰ ਕੇਂਦਰ ਸਰਕ"
+    },
+    {
+      "role": "user",
+      "text": "ਮੇਰੇ ਲਈ ਕਿਹੜੀਆਂ ਯੋਜਨਾਵਾਂ ਹਨ?"
+    },
+    {
+      "role": "ai",
+      "text": "ਅਰਵਿੰਦ ਕੇਜਰੀਵਾਲ ਦੀ ਸਕੀਮਾਂ ਵਿੱਚ ਤੁਹਾਡਾ ਪਰਿਵਾਰ ਨਿਰਾ 8 ਲੱਖ ਤੋਂ ਘੱਟ ਆਮਦਨ ਵਾਲਾ ਹੋਣ ਲਈ ਉਤਰਦਾ ਹੈ, ਤੇ ਮੇਰੇ ਪੱਖੋਂ ਕਿਹਾ ਜਾ ਸਕਦਾ ਹੈ ਕਿ ਤੁਹਾਡਾ ਪਰਿਵਾਰ ਨਿਰਾ 13 ਲੱਖ ਤੋਂ ਘੱਟ ਆਮਦਨ ਵਾਲਾ ਹੋ ਜਾਵੇਗਾ।\n\n**ਤੁਹਾਡੇ ਲਈ ਕੁਝ ਮਹੱਤਵਪੂਰਨ ਯੋਜਨਾਵਾਂ ਹੇਠ ਲਿਖੇ ਅਨੁਸਾਰ ਹਨ:**\n\n### ਯੋਜਨਾ 1: ਪ੍ਰਵੇਸ਼ ਨਿਯੋਜਨਾਂ\n\n- **ਕੁੱਲ ਆਮਦਨੀ ਨਾਲ ਸਬੰਧਤ ਯੋਜਨਾਵਾਂ ਦੀ ਤਰ੍ਹਾਂ, ਪ੍ਰਵੇਸ਼ ਨਿਯੋਜਨਾਂ ਵਿੱਚ ਤੁਹਾਡੇ ਪਰਿਵਾਰ ਦੀ ਆਮਦਨ ਨੂੰ ਵੀ ਹੱਲ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।**\n- **ਇਹ ਯੋਜਨਾ ਹੇਠ ਲਿਖੇ ਮਾਹੌਲ ਵਿੱਚ ਤੁਹਾਡੇ ਪਰਿਵਾਰ ਲਈ ਕਾਫ਼ੀ ਫਾਇਦੇਮੰਦ ਹੋ ਸਕਦੀ ਹੈ:**\n\n### ਯੋਜਨਾ 2: ਪ੍ਰਵੇਸ਼ ਨਿਯੋਜਨਾਂ ਦੇ ਨਾਲ-ਨਾਲ ਹੋਰ ਯੋਜਨਾਵਾਂ\n\n- **ਇਹ ਯੋਜਨਾਵਾਂ ਨਿਰਾ ਤੁਹਾਡੇ ਪਰਿਵਾਰ ਦੀ ਆਮਦਨ ਨੂੰ ਹੀ ਨਹੀਂ, ਬਲਕਿ ਤੁਹਾਡੇ ਪਰਿਵਾਰ ਦੇ ਪਰਿਵਰਤਨ ਨੂੰ ਵੀ ਦਰਸਾਉਂਦੀਆਂ ਹਨ।**\n\n### ਅਨੁਸੂਚਿਤ ਜਾਤੀ ਦੇ ਲਈ ਯੋਜਨਾਵਾਂ"
+    },
+    {
+      "role": "user",
+      "text": "What schemes am I eligible for?"
+    },
+    {
+      "role": "ai",
+      "text": "**Eligible Schemes for R, 45-year-old SC Student from Uttarakhand**\n\nBased on your profile, here are some government schemes you may be eligible for:\n\n### **Scholarships**\n\n* **Post-Matric Scholarship for SC Students**: A financial assistance scheme for SC students pursuing higher education.\n* **National Scholarship Portal (NSP) Scholarship**: A scholarship scheme for students from SC, ST, and minority communities.\n\n### **Health Insurance**\n\n* **Ayushman Bharat Yojana (AB-PMJAY)**: A health insurance scheme providing cashless treatment up to ₹5 lakhs.\n\n### **Other Schemes**\n\n* **Pradhan Mantri Awas Yojana (PMAY)**: A housing scheme providing financial assistance for affordable housing.\n* **Uttarakhand State Government Schemes**: Various schemes like **Uttarakhand Mukhyamantri Kisan Sampada Yojana** for farmers and **Uttarakhand Mukhyamantri Swavalamban Yojana** for entrepreneurs.\n\n### **Income-Based Schemes**\n\n* **Pradhan Mantri Awas Yojana (PMAY) Credit Linked Subsidy Scheme (CLSS)**: A subsidy scheme for middle-income groups.\n* **Deen Dayal Upadhyaya Antyodaya Yojana (DAY-NULM)**: A poverty alleviation scheme providing financial assistance.\n\nPlease note that eligibility for these schemes may vary based on income, family size, and other criteria. I recommend verifying the scheme details and eligibility criteria with the respective authorities or websites.\n\nTo explore more schemes and confirm eligibility, I recommend registering on the **National Scholarship Portal (NSP)** and **Ayushman Bharat Yojana (AB-PMJAY)** websites.\n\nFeel free to ask if you need more information or assistance!"
+    },
+    {
+      "role": "user",
+      "text": "What schemes am I eligible for?"
+    },
+    {
+      "role": "ai",
+      "text": "Hello R, thank you for reaching out. As a 45-year-old SC (Scheduled Caste) student from Uttarakhand with an income of ₹1,345,687, you are eligible for several government schemes. Here are some of the key schemes you may be eligible for:\n\n### **Educational Schemes**\n\n* **Post Matric Scholarship for SC Students**: ₹1,000 to ₹5,000 per month for students pursuing higher education.\n* **National Scholarship Portal (NSP)**: Scholarships for SC students pursuing higher education.\n\n### **Financial Assistance Schemes**\n\n* **Uttarakhand Rajya Kshetry Kalyan Yojana (URKKY)**: Financial assistance for SC students pursuing higher education.\n* **National Scholarship Scheme**: Financial assistance for SC students pursuing higher education.\n\n### **Health Schemes**\n\n* **Ayushman Bharat Yojana (ABY)**: Free health insurance coverage up to ₹5 lakhs per family.\n* **Pradhan Mantri Jan Arogya Yojana (PMJAY)**: Free health insurance coverage up to ₹5 lakhs per family.\n\n### **Other Schemes**\n\n* **Pradhan Mantri Awas Yojana (PMAY)**: Subsidy for home construction or purchase.\n* **Ujjwala Yojana**: Subsidy for LPG connections.\n\nPlease note that these schemes are subject to change, and eligibility may vary based on your specific circumstances. I recommend verifying the details with the relevant authorities or visiting the official website of the schemes.\n\nWould you like me to provide more information on any of these schemes?"
+    },
+    {
+      "role": "user",
+      "text": "ਮੇਰੇ ਲਈ ਕਿਹੜੀਆਂ ਯੋਜਨਾਵਾਂ ਹਨ?"
+    },
+    {
+      "role": "ai",
+      "text": "ਆਪਣੇ ਉਪਜਾਊ ਦੇਸ਼ ਭਾਰਤ ਵਿੱਚ, ਮੈਂ ਤੁਹਾਨੂੰ ਕਈ ਮਹੱਤਵਪੂਰਨ ਯੋਜਨਾਵਾਂ ਦੀ ਜ਼ਰੂਰਤ ਲਈ ਹੈ। ਤੁਹਾਨੂੰ ਇਹਨਾਂ ਯੋਜਨਾਵਾਂ ਦੇ ਅਨੁਸਾਰ ਮੁਹਾਰਤ ਹਾਸਲ ਕਰਨੀ ਮਹੱਤਵਪੂਰਨ ਹੈ:\n\n### 1. ਅੰਤਰਰਾਸ਼ਟਰੀ ਸਵੈ-ਮਾਨਤਾ ਪ੍ਰਾਪਤ ਯੋਜਨਾਵਾਂ-\n\n*   **ਪ੍ਰਾਧਾਨਿਕ ਸਕੂਲ ਸਿੱਖਿਆ ਲਈ ਮਾਤਰਾ: ਪ੍ਰਾਧਾਨਿਕ ਸਕੂਲ ਸਿੱਖਿਆ ਲਈ ਮਾਤਰਾ ਸਕੱਤਰਾਂ ਦੁਆਰਾ ਇੱਕ ਨਿਸ਼ਚਿਤ ਮਾਤਰਾ ਅਤੇ ਪ੍ਰਕਿਰਿਆ ਨਾਲ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾਂਦੀ ਹੈ ਜਿਸਦੀ ਮੁਲਾਕਾਤ ਵਿਦਿਆਰਥੀ ਆਪਣੇ ਆਪ ਨੂੰ 8ਵੀਂ ਜਾਂ ਉਮਰ ਦੇ 14 ਸਾਲ ਤੋਂ ਵੱਧ ਨਹੀਂ ਹੋਣੀ ਚਾਹੀਦੀ। ਇਸ ਲਈ, ਤੁਹਾਨੂੰ ਯਾਤਰਾ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸ ਯੋਜਨਾ ਨੂੰ ਪਾਲਣਾ ਚਾਹੀਦੀ ਹੈ।\n\n### 2. ਰਾਸ਼ਟਰੀ ਯੋਜਨਾਵਾਂ-\n\n*   **ਪਰਿਵਾਰ ਭਲਾਈ ਮੰਤਰਾਲੇ ਦੇ ਅਧੀਨ:**\n\n    *   **ਆਸਰਾਮਾਂ ਲਈ ਕੋਟਾ: ਆਸਰਾਮਾਂ ਲਈ ਕੋਟਾ ਸਕੱਤਰਾਂ ਦੁਆਰਾ ਇੱਕ ਨਿਸ਼ਚਿਤ ਪ੍ਰਕਿਰਿਆ ਅਤੇ ਮਾਤਰਾ ਦੁਆਰਾ ਪ੍ਰਾਪਤ ਕੀਤੀ ਜਾਂਦੀ"
+    },
+    {
+      "role": "user",
+      "text": "आयुष्मान भारत के लिए कैसे आवेदन करें?"
+    },
+    {
+      "role": "ai",
+      "text": "**आयुष्मान भारत योजना के लिए आवेदन करने के चरण**\n\n**चरण 1: पात्रता जाँच करें**\nआपको आयुष्मान भारत योजना के पात्र होने के लिए निम्नलिखित पात्रता मानदंडों को पूरा करना होगा:\n\n* आपकी आय 135,000 रुपये से कम होनी चाहिए।\n* आपका आयकर देय नहीं होना चाहिए।\n* आपको एक राज्य सरकार द्वारा पहचानित बीपीएल परिवार होना चाहिए।\n\n**चरण 2: स्वास्थ्य बीमा कार्ड प्राप्त करने के लिए जिला स्वास्थ्य समिति का दौरा करें**\nआपको अपने जिला स्वास्थ्य समिति में जाकर स्वास्थ्य बीमा कार्ड प्राप्त करना होगा। वहां से आपको एक फॉर्म भरने के लिए कहा जाएगा, जिसमें आपकी व्यक्तिगत जानकारी और परिवार की जानकारी होगी।\n\n**चरण 3: स्वास्थ्य बीमा कार्ड को सत्यापित करें**\nस्वास्थ्य बीमा कार्ड को सत्यापित करने के लिए, आपको अपने निकटतम एसएमएस या अस्पताल में जाना होगा। वहां से आपको अपने स्वास्थ्य बीमा कार्ड को सत्यापित करने के लिए कहा जाएगा।\n\n**चरण 4: स्वास्थ्य सेवाओं का लाभ उठाएं**\nअब आपके पास स्वास्थ्य बीमा कार्ड है, आप स्वास्थ्य सेवाओं का लाभ उठा सकते हैं। आपको अपने किसी भी अस्पताल में जाना होगा और अपने स्वास्थ्य बीमा कार्ड को दिखाना होगा। वहां से आपको इलाज के लिए पैसा मिलेगा।\n\n**महत्वपूर्ण जानकारी**\nआयुष्मान भारत योजना के तहत, आपको प्रति वर्ष 5 लाख रुपये तक का इलाज मिलेगा। इसके अलावा, आपको अपने परिवार के सदस्यों को भी शामिल करना होगा, जिन्हें भी योजना का लाभ मिलेगा।"
+    },
+    {
+      "role": "user",
+      "text": "किसान सम्मान निधि की जानकारी"
+    },
+    {
+      "role": "ai",
+      "text": "**किसान सम्मान निधि योजना**\n\n**विवरण:**\nकिसान सम्मान निधि एक महत्वपूर्ण भारतीय सरकारी योजना है, जिसका उद्देश्य किसानों को आर्थिक सहायता प्रदान करना है। यह योजना छोटे और सीमांत किसानों को वित्तीय सहायता प्रदान करती है, जिससे उनकी आय में वृध्दि होती है।\n\n**पात्रता:**\n\n* छोटे और सीमांत किसान\n* जिन किसानों की धान्य उत्पादन की आयु 2 हेक्टेयर से कम है\n* जिन किसानों की आय 10,000 रुपये प्रति वर्ष से कम है\n\n**लाभ:**\n\n* किसान सम्मान निधि योजना के तहत, किसानों को 6,000 रुपये प्रति वर्ष की आर्थिक सहायता प्रदान की जाती है।\n* यह सहायता 2 हेक्टेयर से अधिक जमीन वाले किसानों के लिए उपलब्ध नहीं है।\n\n**आवेदन प्रक्रिया:**\n\n* किसानों को अपने निकटतम किसान सम्मान निधि कार्यालय में जाना होगा।\n* वहां, उन्हें आवश्यक दस्तावेज जमा करने होंगे, जैसे कि आधार कार्ड, बैंक खाता प्रमाणपत्र, और जमीन का पंजीकरण प्रमाणपत्र।\n* एक बार आवेदन पूरा हो जाने के बाद, किसान सम्मान निधि योजना के तहत सहायता प्रदान की जाएगी।\n\n**आधारभूत जानकारी:**\n\n* किसान सम्मान निधि योजना का लाभ केवल भारत के उन किसानों को मिलेगा, जिनकी आय 10,000 रुपये प्रति वर्ष से कम है।\n* यह योजना 2016 में शुरू की गई थी।"
+    },
+    {
+      "role": "user",
+      "text": "आयुष्मान भारत के लिए कैसे आवेदन करें?"
+    },
+    {
+      "role": "ai",
+      "text": "**आयुष्मान भारत योजना के लिए आवेदन करने के चरण:**\n\n1. **पात्रता:** आयुष्मान भारत योजना के लिए, आपको निम्नलिखित पात्रता पूरी करनी होगी:\n * आपकी आय 5 लाख रुपये प्रति वर्ष से कम होनी चाहिए।\n * आपके पास आर्थिक रूप से कमजोर वर्ग (EWS), दिव्यांग, अनुसूचित जाति (SC) या अनुसूचित जनजाति (ST) का प्रमाण पत्र होना चाहिए।\n2. **आवेदन:** आयुष्मान भारत योजना के लिए आवेदन करने के लिए, आप निम्नलिखित चरणों का पालन कर सकते हैं:\n * अपने राज्य सरकार की वेबसाइट पर जाएं और आयुष्मान भारत योजना के लिए ऑनलाइन आवेदन पत्र भरें।\n * आवश्यक दस्तावेजों को अपलोड करें, जैसे कि पहचान प्रमाण, आय प्रमाण, बीपीएल कार्ड, आदि।\n * अपने आवेदन को जमा करें और एक आवेदन संख्या प्राप्त करें।\n3. **दावा:** आयुष्मान भारत योजना के तहत, आपको अपने बीमा अधिकारी को अपने अस्पताल में भर्ती होने की जानकारी देनी होगी। आपको अपने दावे के लिए आवश्यक दस्तावेज भी जमा करने होंगे, जैसे कि अस्पताल का बिल, डायग्नोस्टिक रिपोर्ट, आदि।\n4. **पayout:** आयुष्मान भारत योजना के तहत, आपको 5 लाख रुपये की बीमा राशि प्राप्त होगी। आपको अपने अस्पताल को भुगतान करना होगा और बाकी की राशि आपके खाते में जमा की जाएगी।\n\n**महत्वपूर्ण:** आयुष्मान भारत योजना के लिए आवेदन करने से पहले, कृपया अपने राज्य सरकार की वेबसाइट पर जाएं और आवश्यक जानकारी की जांच करें।"
+    },
+    {
+      "role": "user",
+      "text": "How to apply for Ayushman Bharat?"
+    },
+    {
+      "role": "ai",
+      "text": "**Ayushman Bharat (AB-PMJAY) Application Process**\n\nAs a student, you are eligible for Ayushman Bharat (AB-PMJAY) scheme. Here's a step-by-step guide to apply:\n\n### Eligibility\n- You must be a resident of Uttarakhand.\n- You must be from a Scheduled Caste (SC) category.\n- Your family's annual income must be below ₹ 8 lakhs.\n\n### Documents Required\n- Aadhaar Card\n- Ration Card\n- SC Certificate\n- Income Proof (if required)\n- ID Proof (if required)\n\n### Application Process\n1. **Visit the Ayushman Bharat website**: [https://www.sehatregister.gov.in/](https://www.sehatregister.gov.in/)\n2. **Click on \"Beneficiary Registration\"**: You can register yourself or a family member as a beneficiary.\n3. **Fill the online application form**: Enter the required details, including your name, age, and income.\n4. **Upload the required documents**: Attach a scanned copy of the documents mentioned above.\n5. **Submit the application**: Review and submit the application form.\n\n### Alternative Options\n1. **Visit a nearby Ayushman Bharat Seva Kendra**: You can also submit your application in person at a nearby Seva Kendra.\n2. **Contact the Uttarakhand State Health Agency**: You can contact the state agency for assistance with the application process.\n\n### Important Notes\n- The application process may vary depending on the state and region.\n- You can check the status of your application on the Ayushman Bharat website.\n- Once your application is approved, you'll receive a unique Health Account Number (HAN) and a card with all the necessary details.\n\nIf you have any further questions or need help with the application process, feel free to ask!"
+    }
+  ]
+}
