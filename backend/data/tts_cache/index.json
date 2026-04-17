@@ -86,5 +86,61 @@
     "text": "Based on your profile, the most relevant options are usually Ayushman Bharat for health cover, PM-Kisan if you are a farmer, and Post-Matric Scholarship if you are studying. Open your profile and scheme cards to confirm the exact eligibility details for your state and income level.",
     "created_at": "2026-04-07T17:00:47.942895+00:00",
     "format": "mp3"
+  },
+  "generic\\hi\\67bd77df6e0f91f38d69.mp3": {
+    "category": "generic",
+    "lang": "hi",
+    "cache_key": null,
+    "text": "क्षमा करें, अभी जवाब नहीं दे पा रहा। कृपया दोबारा कोशिश करें।",
+    "created_at": "2026-04-15T20:56:44.222477+00:00",
+    "format": "mp3"
+  },
+  "generic\\en\\9457d23f6b1e37e7938b.mp3": {
+    "category": "generic",
+    "lang": "en",
+    "cache_key": null,
+    "text": "Hello from JanSaathi route test.",
+    "created_at": "2026-04-15T21:11:19.607749+00:00",
+    "format": "mp3"
+  },
+  "generic\\en\\af6c0cc4322989ce2f68.mp3": {
+    "category": "generic",
+    "lang": "en",
+    "cache_key": null,
+    "text": "Hello from JanSaathi verify.",
+    "created_at": "2026-04-15T21:13:00.143382+00:00",
+    "format": "mp3"
+  },
+  "generic\\gu\\2d930f0df956d6211352.mp3": {
+    "category": "generic",
+    "lang": "gu",
+    "cache_key": null,
+    "text": "नमस्ते R दा, . તમારા પ્રમાણેના વિવરણા પ્રમાણે, તમે એક વિદ્યાર્થી છો જેમણે સ્કોલરશિપ મેળવી છે. તમારા વર્ગની સાથે અને તમારા વર્ગની આધારે તમને પસંદ કરેલી કેટલીક મહત્વપૂર્ણ યોજનાઓ નીચે મુજબ છે:. પ્રાથમિક યોજનાઓ પ્રાથમિક શિક્ષણ પર મદદ (ઇન્ટીફ નાણા): આ યોજના અનુસાર, તમે 100 લાખ કરતા વધુ વર્ષના વર્ગમાંના વિદ્યાર્થીઓને શિક્ષાની ફી દાખલ કરવાની મદદ કરી શકો છો. આ યોજનામાં મુખ્યત્વે આયુવની વિદ્યામાં અને વ્યાવસાયિક શિક્ષણ માટે મદદ મળે છે. ઉચ્ચ શિક્ષણ પર મદદ (એમએસબી નાણા): આ યોજના અનુસાર, તમે ઉચ્ચ શિક્ષણ માટે 2 લાખ કરતા વધુ વર્ષના વર્ગમાંના વિદ્યાર્થીઓને શિક્ષાની ફી દાખલ કરવાની મદદ કરી શકો છો. *જંગલી અવાજના વિદ્યાર્થીઓને શિક્ષા (એસએસ",
+    "created_at": "2026-04-15T21:14:24.272816+00:00",
+    "format": "mp3"
+  },
+  "generic\\en\\ba11821c37bb7c070f7d.mp3": {
+    "category": "generic",
+    "lang": "en",
+    "cache_key": null,
+    "text": "Found 5 schemes for R!",
+    "created_at": "2026-04-16T19:08:17.310255+00:00",
+    "format": "mp3"
+  },
+  "generic\\en\\6f48eb03146be625ddf9.mp3": {
+    "category": "generic",
+    "lang": "en",
+    "cache_key": null,
+    "text": "Aadhaar Card is not a required document for the Post-Matric Scholarship scheme. Accepted documents include Class 10th Marksheet, Class 12th Marksheet, and Income Certificate.",
+    "created_at": "2026-04-16T19:08:56.562286+00:00",
+    "format": "mp3"
+  },
+  "generic\\en\\5f57546c4c6d40c765aa.mp3": {
+    "category": "generic",
+    "lang": "en",
+    "cache_key": null,
+    "text": "Found 4 schemes for R!",
+    "created_at": "2026-04-16T19:16:41.744048+00:00",
+    "format": "mp3"
   }
 }

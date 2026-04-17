@@ -137,7 +137,14 @@ async function speakWithBackend(text: string, lang: Language, onEnd?: () => void
   });
 
   if (!response.ok) {
-    const detail = await response.text();
+    const responseText = await response.text();
+    let detail = responseText;
+    try {
+      const json = JSON.parse(responseText);
+      detail = json.detail || json.message || responseText;
+    } catch {
+      // keep raw text if not JSON
+    }
     throw new Error(detail || `TTS request failed with ${response.status}`);
   }
 
@@ -153,6 +160,10 @@ async function speakWithBackend(text: string, lang: Language, onEnd?: () => void
 async function speakPreset(presetKey: PresetKey, lang: Language, onEnd?: () => void): Promise<void> {
   stopSpeaking();
   isCancelled = false;
+
+  lastText = PRESET_LIPSYNC_TEXT[presetKey]?.[lang] || PRESET_LIPSYNC_TEXT[presetKey]?.['en'] || '';
+  lastLang = lang;
+  lastOptions = { category: presetKey };
   isSpeakingCallback?.(true);
 
   try {
@@ -164,11 +175,14 @@ async function speakPreset(presetKey: PresetKey, lang: Language, onEnd?: () => v
     const blob = await response.blob();
     await playBlob(blob, '', lang, onEnd);
   } catch (err) {
-    console.warn(`[TTS] Preset '${presetKey}' failed, using browser fallback:`, err);
-    isSpeakingCallback?.(false);
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`[TTS] Preset '${presetKey}' failed, using browser fallback:`, message);
     if (presetKey === 'choose_language') {
-      speakWithBrowserTTS('Please select your language. Hindi, English, Punjabi, or Gujarati.', 'en', onEnd);
+      speakWithBrowserTTS(PRESET_LIPSYNC_TEXT['choose_language']['en'], 'en', onEnd);
+    } else if (presetKey === 'welcome') {
+      speakWithBrowserTTS(PRESET_LIPSYNC_TEXT['welcome'][lang] || PRESET_LIPSYNC_TEXT['welcome']['en'], lang, onEnd);
     } else {
+      isSpeakingCallback?.(false);
       onEnd?.();
     }
   }
@@ -272,7 +286,8 @@ export function speak(text: string, lang: Language, onEnd?: () => void, options?
   }
 
   speakWithBackend(clean, lang, onEnd, options).catch((err) => {
-    console.warn('[TTS] Backend speech failed, using browser fallback:', err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn('[TTS] Backend speech failed, using browser fallback:', message);
     if (!isCancelled) {
       speakWithBrowserTTS(clean, lang, onEnd);
     }

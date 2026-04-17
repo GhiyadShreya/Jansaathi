@@ -3,7 +3,7 @@ import { MessageSquare, ShieldCheck, LogOut } from 'lucide-react';
 import { Language, UserProfile, Notification, LANGUAGES } from '../../types';
 import { Avatar } from '../Avatar';
 import { PlayStopButton } from '../ui/PlayStopButton';
-import { speak } from '../../services/tts';
+import { speak, stopSpeaking } from '../../services/tts';
 import { Tab } from '../../hooks/useAppState';
 
 interface SidebarProps {
@@ -52,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <PlayStopButton
             isSpeaking={isSpeaking}
             onPlay={() => speak(LANGUAGES[language].greeting, language)}
-            onStop={() => {}}
+            onStop={stopSpeaking}
             language={language}
           />
         </div>

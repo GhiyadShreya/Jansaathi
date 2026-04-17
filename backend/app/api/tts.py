@@ -30,11 +30,11 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 router = APIRouter()
 
-SPEAKATOO_BASE_URL = os.getenv("SPEAKATOO_BASE_URL", "https://www.speakatoo.com")
-SPEAKATOO_API_URL = urljoin(SPEAKATOO_BASE_URL, "/api/v1/voiceapi")
-SPEAKATOO_API_KEY = os.getenv("SPEAKATOO_API_KEY", "")
-SPEAKATOO_USERNAME = os.getenv("SPEAKATOO_USERNAME") or os.getenv("SPEAKATOO_EMAIL", "")
-SPEAKATOO_PASSWORD = os.getenv("SPEAKATOO_PASSWORD", "")
+SPEAKATOO_BASE_URL = os.getenv("SPEAKATOO_BASE_URL", "https://www.speakatoo.com").rstrip("/")
+SPEAKATOO_API_URL = os.getenv("SPEAKATOO_API_URL", f"{SPEAKATOO_BASE_URL}/api/v1/voiceapi")
+SPEAKATOO_API_KEY = os.getenv("SPEAKATOO_API_KEY", "").strip()
+SPEAKATOO_USERNAME = (os.getenv("SPEAKATOO_USERNAME") or os.getenv("SPEAKATOO_EMAIL", "")).strip()
+SPEAKATOO_PASSWORD = os.getenv("SPEAKATOO_PASSWORD", "").strip()
 SPEAKATOO_ENGINE = os.getenv("SPEAKATOO_TTS_ENGINE", "neural")
 SPEAKATOO_FORMAT = os.getenv("SPEAKATOO_TTS_FORMAT", "wav").lower()
 SPEAKATOO_SYNTHESIZE_TYPE = os.getenv("SPEAKATOO_SYNTHESIZE_TYPE", "save")
@@ -274,21 +274,20 @@ async def _request_speakatoo_audio(text: str, lang: str) -> bytes:
         response = await client.post(SPEAKATOO_API_URL, json=payload, headers=headers)
 
     content_type = response.headers.get("content-type", "").lower()
-    # print(
-    #     "[TTS] Speakatoo response meta:",
-    #     {
-    #         "status_code": response.status_code,
-    #         "content_type": content_type,
-    #     },
-    # )
     if response.is_success and content_type.startswith("audio/"):
         return response.content
 
     try:
         data = response.json()
     except Exception:
-        # print(f"[TTS] Speakatoo raw response: {response.text[:1000]}")
+        print(f"[TTS] Speakatoo raw response text: {response.text[:1000]}")
         raise RuntimeError(f"Speakatoo error {response.status_code}: {response.text[:300]}")
+
+    print(f"[TTS] Speakatoo response meta: status={response.status_code} content_type={content_type}")
+    print(f"[TTS] Speakatoo response payload: {json.dumps(data, ensure_ascii=False)[:1500]}")
+    if response.status_code >= 400:
+        message = data.get("message") if isinstance(data, dict) else None
+        raise RuntimeError(message or f"Speakatoo error {response.status_code}")
 
     print(f"[TTS] Speakatoo JSON response: {json.dumps(data, ensure_ascii=False)[:1500]}")
 

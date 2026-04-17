@@ -1,13 +1,15 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Scheme, Language } from '../types';
+import { Scheme, Language, UserProfile } from '../types';
 import { ExternalLink, CheckCircle2, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { DocumentChecklist } from './DocumentChecklist';
 
 interface SchemeListProps {
   schemes: Scheme[];
   isLoading: boolean;
   language: Language;
+  profile: UserProfile;
 }
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; icon: string }> = {
@@ -21,7 +23,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; icon: string }
   Default: { bg: '#F3F4F6', text: '#374151', icon: '📋' },
 };
 
-export const SchemeList: React.FC<SchemeListProps> = ({ schemes, isLoading, language }) => {
+export const SchemeList: React.FC<SchemeListProps> = ({ schemes, isLoading, language, profile }) => {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   if (isLoading) {
@@ -112,6 +114,15 @@ export const SchemeList: React.FC<SchemeListProps> = ({ schemes, isLoading, lang
                     <p className="text-sm text-gray-600">{scheme.eligibility}</p>
                   </div>
                 </div>
+
+                {/* Document Checklist */}
+                <div className="border-t border-gray-100 pt-3">
+                  <DocumentChecklist
+                    requiredDocs={scheme.required_documents || []}                    userDocs={profile?.documents || []}
+                    language={language}
+                  />
+                </div>
+
                 <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold transition-all"
                   style={{ background: '#FFF7ED', color: '#D97706' }}>
                   <ExternalLink size={12} />

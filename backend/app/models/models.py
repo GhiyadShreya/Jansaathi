@@ -17,6 +17,8 @@ class UserProfile(BaseModel):
     state: str = ""
     income: str = ""
     category: str = ""
+    gender: str = ""
+    phone: Optional[str] = None
     documents: List[str] = []
 
 
@@ -39,6 +41,7 @@ class Scheme(BaseModel):
     eligibility: str
     benefits: str
     category: str
+    required_documents: List[str] = []
 
 
 class Notification(BaseModel):
@@ -54,3 +57,12 @@ class VerifyRequest(BaseModel):
     doc_name: str
     scheme_title: str
     language: Language = Language.en
+
+
+class SendOtpRequest(BaseModel):
+    phone: str
+
+
+class VerifyOtpRequest(BaseModel):
+    phone: str
+    otp: str
