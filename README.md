@@ -1,120 +1,186 @@
-# 🏛️ JanSaathi AI — आपका सरकारी साथी
+# JanSathi — AI-Powered Citizen Assistance Platform
 
-> **Hackathon-ready, production-grade AI assistant for Indian citizens to discover and apply for government schemes.**
-
-![JanSaathi](https://img.shields.io/badge/JanSaathi-v1.0-orange?style=for-the-badge)
-![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green?style=for-the-badge&logo=fastapi)
+> A multilingual, voice-first platform that helps citizens discover relevant government schemes based on their personal profile.
 
 ---
 
-## ✨ Features
+## Table of Contents
 
-| Feature | Description |
-|---|---|
-| 🧞‍♀️ **Genie Intro** | Chirag lamp animation with genie appearing on first load |
-| 🌐 **4 Languages** | Hindi, English, Punjabi, Gujarati with full TTS voice guidance |
-| 👤 **Avatar (Saathi)** | Animated female avatar with lip-sync, blink, breathing |
-| 🏛️ **Scheme Matching** | AI-powered government scheme recommendations |
-| 💬 **AI Chat** | Multilingual conversational AI assistant |
-| 🛡️ **Doc Verification** | Check document eligibility for schemes |
-| 🔔 **Notifications** | Scheduled scheme alerts and reminders |
-| 🎤 **Voice Input** | Speech-to-text in all 4 languages |
-| 📱 **Mobile-first** | Bottom nav, responsive, touch-optimized |
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture Diagram](#architecture-diagram)
+- [User Flow Diagram](#user-flow-diagram)
+- [Tech Stack](#tech-stack)
+- [Supported Languages](#supported-languages)
+- [Setup Instructions](#setup-instructions)
+- [Folder Structure](#folder-structure)
+- [Limitations](#limitations)
+- [Future Scope](#future-scope)
+- [Author](#author)
 
 ---
 
-## 🏗️ Repository Structure
+## Overview
 
-```
-jansaathi-ai/
-│
-├── frontend/                    # React + Tailwind + Framer Motion
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Avatar.tsx       # Animated female avatar (fixed hair)
-│   │   │   ├── GenieIntro.tsx   # Chirag lamp + genie animation
-│   │   │   ├── LanguageSelect.tsx # Big-button language picker
-│   │   │   ├── ActionSelect.tsx  # Icon-based action picker
-│   │   │   ├── ProfileForm.tsx   # Multilingual profile form
-│   │   │   ├── SchemeList.tsx    # Expandable scheme cards
-│   │   │   ├── NotificationPanel.tsx
-│   │   │   └── Logo.tsx         # Clean govt-friendly logo
-│   │   ├── services/
-│   │   │   ├── gemini.ts        # AI API calls
-│   │   │   ├── tts.ts           # Text-to-speech (female voice)
-│   │   │   └── storage.ts       # LocalStorage persistence
-│   │   ├── pages/               # (extensible)
-│   │   ├── types.ts             # TypeScript types + demo data
-│   │   ├── App.tsx              # Main app with full UX flow
-│   │   └── main.tsx
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── backend/                     # FastAPI Python backend
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── chat.py          # Chat endpoints
-│   │   │   ├── schemes.py       # Scheme matching + verification
-│   │   │   ├── notifications.py # Notification CRUD
-│   │   │   ├── profile.py       # Profile management
-│   │   │   └── health.py        # Health check
-│   │   ├── services/
-│   │   │   └── ai_service.py    # Gemini AI integration
-│   │   ├── models/
-│   │   │   └── models.py        # Pydantic models
-│   │   ├── utils/
-│   │   │   └── storage.py       # JSON file store
-│   │   └── main.py              # FastAPI app entry
-│   ├── data/                    # Auto-created JSON data files
-│   └── requirements.txt
-│
-├── notification-engine/         # Standalone notification scheduler
-│   ├── worker.py                # Main worker loop
-│   └── scheduler.py             # Schedule rules
-│
-├── docs/                        # Documentation
-├── .env.example                 # Environment variables template
-└── README.md
+JanSathi ("Jan" = people, "Sathi" = companion) is a citizen assistance platform designed to bridge the gap between government welfare schemes and the people they serve. Users interact with the system using voice in their preferred language, and receive personalized scheme recommendations based on their profile.
+
+The platform currently runs on **Llama 3.2** via Ollama (local inference) and supports voice input/output with a multilingual pipeline covering four Indian languages.
+
+---
+
+## Features
+
+### ✅ Implemented
+
+- **Voice Input & Output** — Users can speak queries; the system responds with synthesized speech using the browser's Web Speech API.
+- **Multilingual Support (4 Languages)** — Hindi, English, Gujarati, and Punjabi are fully supported across the UI, TTS, and STT pipeline.
+- **Profile-Based Personalization** — Scheme recommendations are filtered based on user profile data (age, income, category, state, etc.).
+- **3D Avatar Interface** — A GLB-based avatar rendered with Three.js provides a conversational UI with animations.
+- **Document Verification Module** — Users can check document eligibility for specific schemes.
+- **Authentication** — User authentication handled via OTP.
+- **Notification Engine** — Standalone Python scheduler for scheme alerts and reminders.
+- **Local LLM via Ollama (Llama 3.2)** — All AI inference runs locally using `llama3.2` through Ollama.
+
+### 🚧 Planned
+
+- **Full RAG Pipeline** — Retrieval-Augmented Generation using Qdrant vector database and document embeddings.
+- **Airavata + IndicTrans Integration** — For production-grade Indic language translation.
+- **Bhashini TTS** — High-quality Text-to-Speech for Indian languages in production.
+- **vLLM for Scalable Inference** — Replace Ollama with vLLM for high-throughput, production deployments.
+- **PostgreSQL + Redis + Qdrant Architecture** — Full database layer for persistent storage, caching, and vector search.
+- **WhatsApp Notifications** — Notify users of scheme deadlines and updates via WhatsApp.
+- **More Language Support** — Tamil, Telugu, Bengali, Marathi, and other scheduled Indian languages.
+- **Cloud Deployment** — Deployment on Tata Cloud or hybrid infrastructure.
+
+---
+
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+    A([User]) -->|Voice / Text Input| B[React Frontend\nThree.js Avatar]
+    B -->|REST API Call| C[FastAPI Backend]
+    C -->|Auth Check| D[Authentication Service]
+    C -->|Profile Lookup| E[User Profile Store\nJSON File-based]
+    C -->|Inference Request| F[Ollama — Llama 3.2\nLocal LLM]
+    F -->|Generated Response| C
+    C -->|Multilingual Processing| G[Language Pipeline\nHindi · English · Gujarati · Punjabi]
+    G -->|Translated Response| B
+    C -->|Document Handling| H[Document Verification Module]
+    C -->|Scheme Alerts| I[Notification Engine\nScheduler / Worker]
+    B -->|TTS Voice Output| A
+
+    style A fill:#4A90D9,color:#fff
+    style F fill:#F5A623,color:#fff
+    style G fill:#7ED321,color:#fff
+    style I fill:#9B59B6,color:#fff
 ```
 
 ---
 
-## 🚀 Quick Start
+## User Flow Diagram
+
+```mermaid
+flowchart TD
+    A([User Opens JanSathi]) --> B[Login / Register]
+    B --> C[Select Language\nHindi / English / Gujarati / Punjabi]
+    C --> D[Complete Profile\nAge · Income · Category · State]
+    D --> E{Input Method}
+    E -->|Voice| F[Speech Captured via Browser Mic]
+    E -->|Text| G[Text Input]
+    F --> H[Speech-to-Text Processing]
+    G --> H
+    H --> I[FastAPI Backend\nQuery + Profile Forwarded]
+    I --> J[Ollama — Llama 3.2\nGenerates Scheme Recommendations]
+    J --> K[Multilingual Response Pipeline]
+    K --> L{Output}
+    L -->|Text| M[Display Response via Avatar UI]
+    L -->|Audio| N[TTS Voice Output\nWeb Speech API]
+    M --> O([User Reviews Schemes])
+    N --> O
+    O -->|Upload Documents| P[Document Verification Module]
+    P --> Q([Eligibility Result Returned])
+```
+
+---
+
+## Tech Stack
+
+| Layer              | Technology                                              |
+|--------------------|---------------------------------------------------------|
+| Frontend           | React, TypeScript, Three.js (GLB avatar rendering)      |
+| Backend            | FastAPI (Python)                                        |
+| AI / LLM           | Ollama — **Llama 3.2** (local inference)                |
+| Voice              | Web Speech API — STT & TTS (browser-native)            |
+| Languages          | Hindi, English, Gujarati, Punjabi                       |
+| Storage            | JSON file-based (no database currently)                |
+| Auth               | API-based authentication                                |
+| Notification       | Standalone Python scheduler/worker                     |
+| Planned AI         | Airavata, IndicTrans, vLLM, Bhashini TTS               |
+| Planned DB         | PostgreSQL, Redis, Qdrant                              |
+
+---
+
+## Supported Languages
+
+| Language | Code | UI | Voice Input (STT) | Voice Output (TTS) |
+|----------|------|----|--------------------|---------------------|
+| English  | `en` | ✅ | ✅                 | ✅                  |
+| Hindi    | `hi` | ✅ | ✅                 | ✅                  |
+| Gujarati | `gu` | ✅ | ✅                 | ✅                  |
+| Punjabi  | `pa` | ✅ | ✅                 | ✅                  |
+
+> More languages (Tamil, Telugu, Bengali, Marathi) are planned for future releases.
+
+---
+
+## Setup Instructions
+
+> ⚠️ This project requires **3 terminals running simultaneously**.
 
 ### Prerequisites
-- Node.js 18+
+
+- [Ollama](https://ollama.com/) installed with Llama 3.2 pulled
 - Python 3.11+
-- Google Gemini API key ([get here](https://aistudio.google.com/app/apikey))
+- Node.js 18+
 
-### 1. Clone & Setup Environment
 ```bash
-git clone <repo>
-cd jansaathi-ai
-cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Pull the required model
+ollama pull llama3.2
 ```
 
-### 2. Frontend Setup
+---
+
+### Terminal 1 — Start Ollama (LLM Server)
+
 ```bash
-cd frontend
-npm install
-echo "GEMINI_API_KEY=your_key_here" > .env
-npm run dev
-# App runs at http://localhost:3000
+ollama serve
 ```
 
-### 3. Backend Setup (optional — frontend works standalone)
+---
+
+### Terminal 2 — Start Backend (FastAPI)
+
 ```bash
 cd backend
 pip install -r requirements.txt
-echo "GEMINI_API_KEY=your_key_here" > .env
 python -m uvicorn app.main:app --reload --port 8000
-# API docs at http://localhost:8000/docs
 ```
 
-### 4. Notification Engine (optional)
+---
+
+### Terminal 3 — Start Frontend (React)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+### Optional — Start Notification Engine
+
 ```bash
 cd notification-engine
 python worker.py
@@ -122,85 +188,91 @@ python worker.py
 
 ---
 
-## 🎭 Demo Flow
+## Folder Structure
 
-1. **Open app** → Chirag lamp glows → Genie (Saathi) emerges with welcome speech
-2. **Language Screen** → 4 big buttons with voice reading options aloud
-3. **Action Screen** → Icon-based: Ask JanSaathi / Update Profile / Dashboard
-4. **Dashboard** → Avatar greets in selected language (female voice)
-5. **Profile** → Fill details → AI finds matching schemes
-6. **Chat** → Ask in Hindi/English/Punjabi/Gujarati → Voice response
-7. **Verify** → Check if your documents qualify for a scheme
-
----
-
-## 🧪 Demo Data
-
-The app includes built-in demo data (no API key needed to start):
-- 5 sample government schemes (PM-Kisan, Ayushman Bharat, etc.)
-- 4 demo notifications
-- Pre-populated scheme cards
-
-Set `GEMINI_API_KEY` to enable live AI responses.
-
----
-
-## 🌐 Supported Languages
-
-| Language | Code | TTS | STT | UI |
-|----------|------|-----|-----|-----|
-| English  | `en` | ✅  | ✅  | ✅  |
-| Hindi    | `hi` | ✅  | ✅  | ✅  |
-| Punjabi  | `pa` | ✅  | ✅  | ✅  |
-| Gujarati | `gu` | ✅  | ✅  | ✅  |
-
----
-
-## 🎨 Design System
-
-- **Primary**: Saffron (#FF6B35) → Amber (#F59E0B) gradient
-- **Background**: Warm cream (#FBF8F4)
-- **Font**: Baloo 2 (display) + Inter (body) + Noto Sans Devanagari (Indian scripts)
-- **Radius**: 24px+ rounded cards (friendly, approachable)
-- **Motion**: Framer Motion for all transitions and the genie animation
-
----
-
-## 📡 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/chat/` | AI chat response |
-| POST | `/api/schemes/match` | Match schemes to profile |
-| POST | `/api/schemes/verify` | Verify document eligibility |
-| GET  | `/api/schemes/demo` | Get demo schemes |
-| GET  | `/api/notifications/` | List notifications |
-| PATCH| `/api/notifications/{id}/read` | Mark as read |
-| GET  | `/api/profile/` | Get profile |
-| POST | `/api/profile/` | Save profile |
-| GET  | `/api/health` | Health check |
+```
+Jansaathi/
+│
+├── frontend/                        # React + TypeScript frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Avatar.tsx           # Three.js GLB avatar renderer
+│   │   │   ├── GenieIntro.tsx       # Intro animation
+│   │   │   ├── LanguageSelect.tsx   # Language picker (4 languages)
+│   │   │   ├── ActionSelect.tsx     # Icon-based action picker
+│   │   │   ├── ProfileForm.tsx      # Multilingual profile form
+│   │   │   ├── SchemeList.tsx       # Scheme recommendation cards
+│   │   │   ├── NotificationPanel.tsx
+│   │   │   └── Logo.tsx
+│   │   ├── services/
+│   │   │   ├── tts.ts               # Text-to-speech (Web Speech API)
+│   │   │   └── storage.ts           # LocalStorage persistence
+│   │   ├── types.ts                 # TypeScript types + demo data
+│   │   ├── App.tsx                  # Main app with full UX flow
+│   │   └── main.tsx
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── backend/                         # FastAPI Python backend
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── chat.py              # Chat endpoints
+│   │   │   ├── schemes.py           # Scheme matching + verification
+│   │   │   ├── notifications.py     # Notification CRUD
+│   │   │   ├── profile.py           # Profile management
+│   │   │   └── health.py            # Health check
+│   │   ├── services/
+│   │   │   └── ai_service.py        # Ollama / Llama 3.2 integration
+│   │   ├── models/
+│   │   │   └── models.py            # Pydantic models
+│   │   ├── utils/
+│   │   │   └── storage.py           # JSON file store
+│   │   └── main.py                  # FastAPI app entry point
+│   ├── data/                        # Auto-created JSON data files
+│   └── requirements.txt
+│
+├── notification-engine/             # Standalone notification scheduler
+│   ├── worker.py                    # Main worker loop
+│   └── scheduler.py                 # Schedule rules
+│
+├── .gitignore
+├── .gitattributes
+├── package.json
+├── package-lock.json
+└── README.md
+```
 
 ---
 
-## 🔮 Roadmap / Bonus Features
+## Limitations
 
-- [ ] Offline PWA with service worker
-- [ ] WhatsApp integration for notifications
-- [ ] Camera-based document scanner
-- [ ] More regional languages (Tamil, Telugu, Bengali, Marathi)
-- [ ] Government portal deep links
-- [ ] Scheme application status tracker
-
----
-
-## 🏆 Built With
-
-- **Frontend**: React 19, Tailwind CSS v4, Framer Motion, Lucide Icons
-- **Backend**: FastAPI, Pydantic v2, Google Gemini AI
-- **Storage**: JSON file-based (no database needed)
-- **Voice**: Web Speech API (TTS + STT, browser-native)
-- **Animations**: Pure CSS + Framer Motion + SVG
+- **No RAG pipeline yet** — The LLM does not retrieve from a live scheme database. Responses depend on Llama 3.2's pre-trained knowledge, which may be incomplete or outdated for specific schemes.
+- **Local inference only** — Ollama with Llama 3.2 is not suited for concurrent multi-user production deployments.
+- **4 languages only** — Only Hindi, English, Gujarati, and Punjabi are currently supported. Other Indian languages are not yet available.
+- **Voice quality depends on browser** — TTS/STT uses the browser's Web Speech API, which varies in accuracy and language support across devices and browsers.
+- **No persistent database** — User profiles and session data are stored in JSON files, not a production-grade database.
+- **Document verification is partial** — The module accepts uploads but full automated verification logic is not complete.
 
 ---
 
-*JanSaathi — Bridging the gap between Indian citizens and government schemes* 🇮🇳
+## Future Scope
+
+- Integrate a **full RAG pipeline** with Qdrant to ground LLM responses in an up-to-date government scheme database.
+- Replace browser STT/TTS with **Bhashini** for accurate Indic language speech support.
+- Add **Airavata + IndicTrans** for robust multilingual translation across all 22 scheduled Indian languages.
+- Scale inference using **vLLM** to handle concurrent users in production.
+- Build out the **PostgreSQL + Redis + Qdrant** data architecture for persistence, caching, and vector search.
+- Send scheme deadline reminders and updates via **WhatsApp notifications**.
+- Deploy on **Tata Cloud or hybrid infrastructure** for reliability and data residency compliance.
+- Expand language coverage to Tamil, Telugu, Bengali, and Marathi.
+
+---
+
+## Author
+
+**JanSathi** is developed as an initiative to make government welfare schemes more accessible to citizens through conversational AI.
+
+---
+
+> *This project is under active development. Features marked 🚧 are not yet available.*
