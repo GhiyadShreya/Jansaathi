@@ -1,16 +1,118 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { STATES } from '../types';
+import { STATES, Language } from '../types';
+
+const LABELS: Record<Language, Record<string, string>> = {
+  en: {
+    title: 'Help us find the best schemes for you',
+    nameQuestion: 'What is your name?',
+    namePlaceholder: 'Enter your name',
+    genderQuestion: 'Tell us about yourself, you are a...',
+    ageQuestion: 'and your age is',
+    years: 'years',
+    maritalQuestion: 'and your marital status is...',
+    stateQuestion: 'Please select your state',
+    residenceQuestion: 'Please select your area of residence',
+    categoryQuestion: 'You belong to...',
+    disabilityQuestion: 'Do you identify as a person with a disability?',
+    minorityQuestion: 'Do you belong to a minority community?',
+    studentQuestion: 'Are you a student?',
+    employmentQuestion: 'What is your current employment status?',
+    governmentQuestion: 'Are you currently working as a government employee?',
+    annualIncomeQuestion: 'What is your annual income?',
+    familyIncomeQuestion: "What is your family's annual income?",
+    select: 'Select',
+    skip: 'Skip & Move to Results ⏭️',
+    reset: '↺ Reset Form',
+    back: '← Back',
+    next: 'Next →',
+    submit: 'Submit',
+  },
+  hi: {
+    title: 'हमें आपके लिए सबसे अच्छी योजनाएं खोजने में मदद करें',
+    nameQuestion: 'आपका नाम क्या है?',
+    namePlaceholder: 'अपना नाम दर्ज करें',
+    genderQuestion: 'अपने बारे में बताइए, आप...',
+    ageQuestion: 'और आपकी आयु है',
+    maritalQuestion: 'और आपकी वैवाहिक स्थिति है...',
+    stateQuestion: 'कृपया अपना राज्य चुनें',
+    residenceQuestion: 'कृपया अपना निवास क्षेत्र चुनें',
+    categoryQuestion: 'आप किस श्रेणी से हैं...',
+    disabilityQuestion: 'क्या आप विकलांगता वाले व्यक्ति के रूप में पहचानते हैं?',
+    minorityQuestion: 'क्या आप अल्पसंख्यक समुदाय से हैं?',
+    studentQuestion: 'क्या आप छात्र हैं?',
+    employmentQuestion: 'आपकी वर्तमान रोज़गार स्थिति क्या है?',
+    governmentQuestion: 'क्या आप वर्तमान में सरकारी कर्मचारी हैं?',
+    annualIncomeQuestion: 'आपकी वार्षिक आय क्या है?',
+    familyIncomeQuestion: 'आपके परिवार की वार्षिक आय क्या है?',
+    select: 'चुनें',
+    skip: 'छोड़ें और परिणाम देखें ⏭️',
+    reset: '↺ फॉर्म रीसेट करें',
+    back: '← वापस',
+    next: 'आगे →',
+    submit: 'सबमिट',
+  },
+  pa: {
+    title: 'ਸਾਨੂੰ ਤੁਹਾਡੇ ਲਈ ਸਭ ਤੋਂ ਵਧੀਆ ਯੋਜਨਾਵਾਂ ਲੱਭਣ ਵਿੱਚ ਮਦਦ ਕਰੋ',
+    nameQuestion: 'ਤੁਹਾਡਾ ਨਾਮ ਕੀ ਹੈ?',
+    namePlaceholder: 'ਆਪਣਾ ਨਾਮ ਦਰਜ ਕਰੋ',
+    genderQuestion: 'ਸਾਡੇ ਨੂੰ ਦੱਸੋ, ਤੁਸੀਂ...',
+    ageQuestion: 'ਅਤੇ ਤੁਹਾਡੀ ਉਮਰ ਹੈ',
+    maritalQuestion: 'ਅਤੇ ਤੁਹਾਡੀ ਵਿਆਹੀ ਸਥਿਤੀ ਹੈ...',
+    stateQuestion: 'ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਰਾਜ ਚੁਣੋ',
+    residenceQuestion: 'ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਰਹਿਣ ਵਾਲਾ ਖੇਤਰ ਚੁਣੋ',
+    categoryQuestion: 'ਤੁਸੀਂ ਕਿਸ ਵਰਗ ਨਾਲ ਹੋ...',
+    disabilityQuestion: 'ਕੀ ਤੁਸੀਂ ਆਪਣੇ ਆਪ ਨੂੰ ਅਪੰਗਤਾ ਵਾਲੇ ਵਿਅਕਤੀ ਸਮਝਦੇ ਹੋ?',
+    minorityQuestion: 'ਕੀ ਤੁਸੀਂ ਘੱਟ ਗਿਣਤੀ ਵਾਲੀ ਸਮੁਦਾਇਕ ਤਰਬੀਅਤ ਨਾਲ ਹੋ?',
+    studentQuestion: 'ਕੀ ਤੁਸੀਂ ਵਿਦਿਆਰਥੀ ਹੋ?',
+    employmentQuestion: 'ਤੁਹਾਡੀ ਵਰਤਮਾਨ ਰੋਜ਼ਗਾਰ ਸਥਿਤੀ ਕੀ ਹੈ?',
+    governmentQuestion: 'ਕੀ ਤੁਸੀਂ ਇਸ ਸਮੇਂ ਸਰਕਾਰੀ ਕਰਮਚਾਰੀ ਹੋ?',
+    annualIncomeQuestion: 'ਤੁਹਾਡੀ ਸਾਲਾਨਾ ਆਮਦਨ ਕੀ ਹੈ?',
+    familyIncomeQuestion: 'ਤੁਹਾਡੇ ਪਰਿਵਾਰ ਦੀ ਸਾਲਾਨਾ ਆਮਦਨ ਕੀ ਹੈ?',
+    select: 'ਚੁਣੋ',
+    skip: 'ਛੱਡੋ ਅਤੇ ਨਤੀਜਿਆਂ ਵੱਲ ਵਧੋ ⏭️',
+    reset: '↺ ਫਾਰਮ ਰੀਸੈੱਟ ਕਰੋ',
+    back: '← ਵਾਪਸ',
+    next: 'ਅੱਗੇ →',
+    submit: 'ਜਮ੍ਹਾਂ ਕਰੋ',
+  },
+  gu: {
+    title: 'અમને તમારા માટે શ્રેષ્ઠ યોજનાઓ શોધવામાં મદદ કરો',
+    nameQuestion: 'તમારું નામ શું છે?',
+    namePlaceholder: 'તમારું નામ દાખલ કરો',
+    genderQuestion: 'અમને જણાવો, તમે...',
+    ageQuestion: 'અને તમારી ઉંમર છે',
+    maritalQuestion: 'અને તમારી વૈવાહિક સ્થિતિ છે...',
+    stateQuestion: 'કૃપા કરીને તમારો રાજ્ય પસંદ કરો',
+    residenceQuestion: 'કૃપા કરીને તમારો રહેણાંક વિસ્તાર પસંદ કરો',
+    categoryQuestion: 'તમે કયા વર્ગના છો...',
+    disabilityQuestion: 'શું તમે સ્વયંને વિકલાંગ વ્યક્તિનો ભાગ માનો છો?',
+    minorityQuestion: 'શું તમે અಲ್ಪસંખ્યક સમુદાયમાં આવો છો?',
+    studentQuestion: 'શું તમે વિદ્યાર્થી છો?',
+    employmentQuestion: 'તમારી વર્તમાન રોજગાર સ્થિતિ શું છે?',
+    governmentQuestion: 'શું તમે હાલમાં સરકારી કર્મચારી તરીકે કામ કરો છો?',
+    annualIncomeQuestion: 'તમારી વાર્ષિક આવક કેટલી છે?',
+    familyIncomeQuestion: 'તમારા પરિવારમાંની વાર્ષિક આવક કેટલી છે?',
+    select: 'પસંદ કરો',
+    skip: 'છોડો અને પરિણામો જુઓ ⏭️',
+    reset: '↺ ફોર્મ રીસેટ કરો',
+    back: '← પાછો',
+    next: 'આગળ →',
+    submit: 'જમાવો',
+  },
+};
 
 interface QuestionnaireModalProps {
+  language: Language;
   onComplete: (data: any) => void;
   onClose: () => void;
 }
 
-export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComplete, onClose }) => {
+export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ language, onComplete, onClose }) => {
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
 
+  const [name, setName] = useState('');
   const [gender, setGender] = useState('Female');
   const [age, setAge] = useState<number | ''>('');
   const [maritalStatus, setMaritalStatus] = useState('');
@@ -25,9 +127,14 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
   const [annualIncome, setAnnualIncome] = useState('');
   const [familyIncome, setFamilyIncome] = useState('');
 
+  const text = LABELS[language] || LABELS.en;
+
   const compileData = () => ({
+    name: name.trim(),
     gender,
-    age: age ? Number(age) : undefined,
+    age: age ? String(age) : '',
+    occupation: employmentStatus,
+    income: annualIncome ? String(annualIncome) : '',
     maritalStatus,
     state,
     residence,
@@ -37,8 +144,8 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
     isStudent,
     employmentStatus,
     isGovtEmployee,
-    annualIncome: annualIncome ? Number(annualIncome) : undefined,
-    familyIncome: familyIncome ? Number(familyIncome) : undefined
+    annualIncome: annualIncome ? String(annualIncome) : '',
+    familyIncome: familyIncome ? String(familyIncome) : '',
   });
 
   const handleSkip = () => {
@@ -46,7 +153,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
   };
 
   const handleNext = () => {
-    if (step === 1 && (!age || (age > 18 && !maritalStatus))) return;
+    if (step === 1 && (!name.trim() || !age || (age > 18 && !maritalStatus))) return;
     if (step === 2 && (!state || !residence)) return;
     if (step === 3 && !category) return;
     if (step === 4 && (!isDisability || !isMinority)) return;
@@ -98,21 +205,21 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
         className="w-full py-4 rounded-2xl font-black text-white text-lg transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ background: 'linear-gradient(135deg, #10B981, #059669)' }}
       >
-        {isSubmit ? 'Submit' : 'Next →'}
+        {isSubmit ? text.submit : text.next}
       </button>
       {showSkip ? (
         <button
           onClick={handleSkip}
           className="w-full py-3 rounded-2xl font-bold text-green-600 bg-green-50 border-2 border-green-100 hover:bg-green-200 transition-all"
         >
-          Skip & Move to Results ⏭️
+          {text.skip}
         </button>
       ) : (
         <button
           onClick={handleReset}
           className="text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors mx-auto mt-2"
         >
-          ↺ Reset Form
+          {text.reset}
         </button>
       )}
     </div>
@@ -126,7 +233,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
       <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
         {/* Heading */}
         <h2 className="text-gray-500 font-semibold text-lg sm:text-xl mb-4 text-center">
-          Help us find the best schemes for you
+          {text.title}
         </h2>
         
         {/* Main Card */}
@@ -144,7 +251,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
                 onClick={() => setStep(s => s - 1)}
                 className="absolute left-0 text-sm text-gray-400 hover:text-gray-600 font-medium"
               >
-                ← Back
+                {text.back}
               </button>
             )}
             <div className="flex items-center w-[55%] justify-between">
@@ -162,11 +269,21 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
           {/* Step 1 Content */}
           {step === 1 && (
             <div className="flex-1 flex flex-col">
-              
-              {/* Q1: Gender Selection */}
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3">
-                  Tell us about yourself, you are a... <span className="text-red-500">*</span>
+                  {text.nameQuestion} <span className="text-red-500">*</span>
+                </label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={text.namePlaceholder}
+                  className="w-full text-lg text-gray-900 border-2 border-gray-300 rounded-2xl px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all bg-white"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block font-bold text-gray-800 mb-3">
+                  {text.genderQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-3">
                   {[
@@ -190,23 +307,21 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
                 </div>
               </div>
 
-              {/* Q2: Age Dropdown */}
               <div className="mb-6 flex items-center flex-wrap gap-2 text-gray-800 font-medium text-lg">
-                <span>and your age is</span>
+                <span>{text.ageQuestion}</span>
                 <select
                   value={age}
                   onChange={(e) => setAge(e.target.value ? Number(e.target.value) : '')}
                   className="font-bold text-xl text-gray-900 border-2 border-gray-300 rounded-xl px-3 py-1 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all bg-white"
                 >
-                  <option value="" disabled>Select</option>
+                  <option value="" disabled>{text.select}</option>
                   {Array.from({ length: 115 }, (_, i) => i + 1).map(num => (
                     <option key={num} value={num}>{num}</option>
                   ))}
                 </select>
-                <span>years</span>
+                <span>{text.years}</span>
               </div>
 
-              {/* Q3: Marital Status (Conditional) */}
               <AnimatePresence>
                 {typeof age === 'number' && age > 18 && (
                   <motion.div
@@ -216,26 +331,20 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
                     className="overflow-hidden"
                   >
                     <label className="block font-bold text-gray-800 mb-3">
-                      and your marital status is... <span className="text-red-500">*</span>
+                      {text.maritalQuestion} <span className="text-red-500">*</span>
                     </label>
                     <div className="flex gap-3">
-                      {[
-                        { id: 'Single', icon: '👤' },
-                        { id: 'Married', icon: '💍' },
-                        { id: 'Widowed', icon: '🕊️' },
-                        { id: 'Divorced', icon: '💔' }
-                      ].map((m) => (
+                      {['Single', 'Married', 'Widowed', 'Divorced'].map((m) => (
                         <button
-                          key={m.id}
-                          onClick={() => setMaritalStatus(m.id)}
-                          className={`flex-1 py-3 px-1 rounded-xl flex flex-col items-center justify-center gap-2 border-2 transition-all ${
-                            maritalStatus === m.id 
+                          key={m}
+                          onClick={() => setMaritalStatus(m)}
+                          className={`flex-1 py-4 rounded-xl flex items-center justify-center border-2 transition-all ${
+                            maritalStatus === m 
                               ? 'border-green-500 bg-green-50 text-green-700 shadow-md' 
                               : 'border-gray-200 bg-white text-gray-500 hover:border-gray-300'
                           }`}
                         >
-                          <span className="text-xl mb-1">{m.icon}</span>
-                          <span className="text-xs font-semibold">{m.id}</span>
+                          <span className="text-sm font-semibold">{m}</span>
                         </button>
                       ))}
                     </div>
@@ -243,7 +352,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
                 )}
               </AnimatePresence>
 
-              {renderActionButtons(!age || (age > 18 && !maritalStatus), false, false)}
+              {renderActionButtons(!name.trim() || !age || (age > 18 && !maritalStatus), false, false)}
             </div>
           )}
 
@@ -252,21 +361,21 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
             <div className="flex-1 flex flex-col">
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3">
-                  Please select your state <span className="text-red-500">*</span>
+                  {text.stateQuestion} <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={state}
                   onChange={(e) => setStateVal(e.target.value)}
                   className="w-full font-bold text-lg text-gray-900 border-2 border-gray-300 rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all bg-white"
                 >
-                  <option value="" disabled>Select State</option>
+                  <option value="" disabled>{text.select}</option>
                   {STATES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
 
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3 mt-4">
-                  Please select your area of residence <span className="text-red-500">*</span>
+                  {text.residenceQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-3">
                   {['Urban', 'Rural'].map((r) => (
@@ -295,7 +404,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
             <div className="flex-1 flex flex-col">
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3">
-                  You belong to... <span className="text-red-500">*</span>
+                  {text.categoryQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex flex-col gap-2">
                   {[
@@ -330,7 +439,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
             <div className="flex-1 flex flex-col">
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3">
-                  Do you identify as a person with a disability? <span className="text-red-500">*</span>
+                  {text.disabilityQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-3">
                   {['Yes', 'No'].map((opt) => (
@@ -349,7 +458,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
 
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3 mt-4">
-                  Do you belong to minority? <span className="text-red-500">*</span>
+                  {text.minorityQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-3">
                   {['Yes', 'No'].map((opt) => (
@@ -375,7 +484,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
             <div className="flex-1 flex flex-col">
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3">
-                  Are you a student? <span className="text-red-500">*</span>
+                  {text.studentQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-3">
                   {['Yes', 'No'].map((opt) => (
@@ -407,7 +516,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
                     className="overflow-hidden"
                   >
                     <label className="block font-bold text-gray-800 mb-3">
-                      What is your current employment status? <span className="text-red-500">*</span>
+                      {text.employmentQuestion} <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {['Employed', 'Unemployed', 'Self-Employed/Entrepreneur'].map((status) => (
@@ -438,7 +547,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
                     className="overflow-hidden"
                   >
                     <label className="block font-bold text-gray-800 mb-3">
-                      Are you currently working as a government employee? <span className="text-red-500">*</span>
+                      {text.governmentQuestion} <span className="text-red-500">*</span>
                     </label>
                     <div className="flex gap-3">
                       {['Yes', 'No'].map((opt) => (
@@ -470,7 +579,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
             <div className="flex-1 flex flex-col">
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3">
-                  What is your annual income? <span className="text-red-500">*</span>
+                  {text.annualIncomeQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>
@@ -486,7 +595,7 @@ export const QuestionnaireModal: React.FC<QuestionnaireModalProps> = ({ onComple
 
               <div className="mb-6">
                 <label className="block font-bold text-gray-800 mb-3 mt-4">
-                  What is your family's annual income? <span className="text-red-500">*</span>
+                  {text.familyIncomeQuestion} <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">₹</span>

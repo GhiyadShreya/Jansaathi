@@ -23,10 +23,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       style={{ background: 'linear-gradient(135deg, #FFF7ED, #FFF0E8)', border: '1px solid #FED7AA' }}
     >
       <h2 className="text-2xl font-black text-gray-900" style={{ fontFamily: "'Baloo 2', cursive" }}>
-        {language === 'hi' ? '👤 आपकी प्रोफ़ाइल' : language === 'pa' ? '👤 ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ' : '👤 Your Profile'}
+        {language === 'hi' ? '👤 आपकी प्रोफ़ाइल' : language === 'pa' ? '👤 ਤੁਹਾਡੀ ਪ੍ਰੋਫਾਈਲ' : language === 'gu' ? '👤 તમારી પ્રોફાઇલ' : '👤 Your Profile'}
       </h2>
       <p className="text-sm text-gray-500 mt-1">
-        {language === 'hi' ? 'सटीक जानकारी से बेहतर योजनाएं मिलती हैं' : 'Accurate details help find better schemes for you'}
+        {language === 'hi' ? 'सटीक जानकारी से बेहतर योजनाएं मिलती हैं' : language === 'pa' ? 'ਸਹੀ ਵੇਰਵੇ ਬਿਹਤਰ ਯੋਜਨਾਵਾਂ ਲੱਭਣ ਵਿੱਚ ਮਦਦ ਕਰਦੇ ਹਨ' : language === 'gu' ? 'સાચા વિગતોથી વધુ સારી યોજનાઓ મળે છે' : 'Accurate details help find better schemes for you'}
       </p>
     </div>
 

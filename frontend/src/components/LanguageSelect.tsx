@@ -10,7 +10,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Language, LANGUAGES } from '../types';
-import { speak, registerAudioBufferCallback } from '../services/tts';
+import { speak, speakChooseLanguage, registerAudioBufferCallback } from '../services/tts';
 import { GLBAvatar, GLBAvatarHandle } from './GLBAvatar';
 
 interface LanguageSelectProps {
@@ -36,7 +36,7 @@ export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelect }) => {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      speak("Welcome to Jan Saathi! Please select your language. Hindi, English, Punjabi, or Gujarati.", "en");
+      speakChooseLanguage();
     }, 400);
 
     return () => {

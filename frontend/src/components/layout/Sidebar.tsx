@@ -5,6 +5,7 @@ import { Avatar } from '../Avatar';
 import { PlayStopButton } from '../ui/PlayStopButton';
 import { speak, stopSpeaking } from '../../services/tts';
 import { Tab } from '../../hooks/useAppState';
+import { getNotificationCopy } from '../../utils/notificationText';
 
 interface SidebarProps {
   language: Language;
@@ -99,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${n.read ? 'bg-gray-200' : 'bg-orange-500'}`} />
             <p className={`text-xs leading-snug ${n.read ? 'text-gray-400' : 'text-gray-700 font-medium'}`}>
-              {n.title}
+              {getNotificationCopy(n, language).title}
             </p>
           </div>
         ))}
