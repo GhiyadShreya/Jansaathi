@@ -3,7 +3,6 @@ import { AnimatePresence } from 'motion/react';
 
 import { GenieIntro } from './components/GenieIntro';
 import { LanguageSelect } from './components/LanguageSelect';
-import { AuthScreen } from './components/AuthScreen';
 import { QuestionnaireModal } from './components/QuestionnaireModal';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
@@ -16,14 +15,13 @@ import { NotificationPanel } from './components/NotificationPanel';
 
 import { useAppState } from './hooks/useAppState';
 import { useChat } from './hooks/useChat';
+import { createEmptyProfile } from './services/storage';
 
 export default function App() {
   const app = useAppState();
   const chat = useChat(app.profile, app.language);
 
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Skip the initial Genie intro (purple page)
   useEffect(() => {
@@ -32,27 +30,14 @@ export default function App() {
     }
   }, [app.appStep, app]);
 
-  // Trigger auth modal when accessing profile tab if not authenticated
-  useEffect(() => {
-    if (app.activeTab === 'profile' && !isAuthenticated) {
-      setShowAuthModal(true);
-    }
-  }, [app.activeTab, isAuthenticated]);
-
   // Clear chat when language changes
   useEffect(() => {
-    if (chat && typeof chat.setMessages === 'function') {
-      chat.setMessages([]);
-    } else if (chat && typeof (chat as any).clearMessages === 'function') {
-      (chat as any).clearMessages();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    chat.clearHistory();
   }, [app.language]);
 
   if (app.appStep === 'genie') return null;
   if (app.appStep === 'language') return <LanguageSelect onSelect={(lang) => {
-    app.setLanguage(lang);
-    app.setAppStep('dashboard');
+    app.startFreshSession(lang);
     setShowQuestionnaire(true);
   }} />;
 
@@ -60,34 +45,22 @@ export default function App() {
     <div className="min-h-screen" style={{ background: '#FBF8F4', fontFamily: "'Inter', sans-serif" }}>
 
       <AnimatePresence>
-        {showAuthModal && (
-          <AuthScreen 
-            language={app.language} 
-            onLogin={(phone) => {
-              app.setProfile({ ...app.profile, phone });
-              setIsAuthenticated(true);
-              setShowAuthModal(false);
-            }} 
-            onClose={() => {
-              setShowAuthModal(false);
-              // If they cancel out of auth, return them to the dashboard
-              if (app.activeTab === 'profile') {
-                app.setActiveTab('dashboard');
-              }
-            }} 
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
         {showQuestionnaire && (
           <QuestionnaireModal
+            language={app.language}
             onComplete={(data) => {
-              app.setProfile({ ...app.profile, ...data });
+              app.setProfile({
+                ...createEmptyProfile(),
+                ...data,
+                occupation: data.employmentStatus || '',
+                income: data.annualIncome || '',
+              });
               setShowQuestionnaire(false);
               // Automatically trigger a scheme search to fetch matches 
               setTimeout(() => {
-                if (app.handleSaveProfile) app.handleSaveProfile();
+                if (app.handleSaveProfile) {
+                  app.handleSaveProfile({ useWelcomeGreeting: true });
+                }
               }, 100);
             }}
             onClose={() => setShowQuestionnaire(false)}

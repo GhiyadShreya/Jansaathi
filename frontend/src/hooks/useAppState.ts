@@ -1,40 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  MessageSquare, User, Bell, ShieldCheck, LayoutDashboard,
+  LayoutDashboard,
+  MessageSquare,
+  ShieldCheck,
+  User,
 } from 'lucide-react';
 
-import { UserProfile, Scheme, Language, AppStep, Notification, LANGUAGES, DEMO_SCHEMES } from '../types';
+import { AppStep, Language, Notification, Scheme, UserProfile } from '../types';
 import { getMatchedSchemes } from '../services/api';
-import { speak, stopSpeaking } from '../services/tts';
-import { storage } from '../services/storage';
+import { speak, speakWelcome, stopSpeaking } from '../services/tts';
+import { createEmptyProfile, storage } from '../services/storage';
 
 export type Tab = 'dashboard' | 'profile' | 'chat' | 'verify';
+
+interface SaveProfileOptions {
+  useWelcomeGreeting?: boolean;
+}
 
 export function useAppState() {
   const [appStep, setAppStep] = useState<AppStep>('genie');
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
-  const [language, setLanguage] = useState<Language>('en');
-  const [profile, setProfile] = useState<UserProfile>(storage.getProfile());
-  const [schemes, setSchemes] = useState<Scheme[]>(DEMO_SCHEMES.slice(0, 3));
+  const [language, setLanguageState] = useState<Language>('en');
+  const [profile, setProfile] = useState<UserProfile>(createEmptyProfile());
+  const [schemes, setSchemes] = useState<Scheme[]>([]);
   const [isLoadingSchemes, setIsLoadingSchemes] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>(storage.getNotifications());
   const [showNotifications, setShowNotifications] = useState(false);
-  const [hasGreeted, setHasGreeted] = useState(false);
 
-  // Persist profile and notifications
-  useEffect(() => { storage.saveProfile(profile); }, [profile]);
-
-  // Greet on dashboard arrival
   useEffect(() => {
-    if (appStep === 'dashboard' && !hasGreeted) {
-      setHasGreeted(true);
-      setTimeout(() => speak(LANGUAGES[language].greeting, language), 600);
-    }
-  }, [appStep, language, hasGreeted]);
+    storage.saveProfile(profile);
+  }, [profile]);
 
-  const handleLanguageSelect = (lang: Language) => {
-    setLanguage(lang);
-    setAppStep('action');
+  const startFreshSession = (lang: Language) => {
+    stopSpeaking();
+    setLanguageState(lang);
+    setProfile(createEmptyProfile());
+    setSchemes([]);
+    setActiveTab('dashboard');
+    setShowNotifications(false);
+    storage.clearProfile();
+    storage.clearChatHistory();
+    setAppStep('dashboard');
   };
 
   const handleActionSelect = (action: 'profile' | 'chat' | 'dashboard') => {
@@ -42,20 +48,64 @@ export function useAppState() {
     setAppStep('dashboard');
   };
 
-  const handleSaveProfile = async () => {
+  const handleLanguageChange = async (nextLanguage: Language) => {
+    if (nextLanguage === language) return;
+
+    stopSpeaking();
+    setLanguageState(nextLanguage);
+
+    const hasProfileData = Boolean(
+      profile.name ||
+      profile.age ||
+      profile.occupation ||
+      profile.state ||
+      profile.income ||
+      profile.category ||
+      profile.documents.length
+    );
+
+    if (!hasProfileData) {
+      setSchemes([]);
+      return;
+    }
+
+    setIsLoadingSchemes(true);
+    try {
+      const matched = await getMatchedSchemes(profile, nextLanguage);
+      setSchemes(matched);
+    } finally {
+      setIsLoadingSchemes(false);
+    }
+  };
+
+  const handleSaveProfile = async (options?: SaveProfileOptions) => {
     setIsLoadingSchemes(true);
     setActiveTab('dashboard');
+
     const matched = await getMatchedSchemes(profile, language);
     setSchemes(matched);
     setIsLoadingSchemes(false);
+
+    if (options?.useWelcomeGreeting) {
+      speakWelcome(language);
+      return;
+    }
+
     const msg = language === 'hi'
-      ? `${profile.name || 'आपके'} के लिए ${matched.length} योजनाएं मिली हैं!`
+      ? `${profile.name || 'आपके'} के लिए ${matched.length} योजनाएँ मिली हैं!`
+      : language === 'pa'
+      ? `${profile.name || 'ਤੁਹਾਡੇ'} ਲਈ ${matched.length} ਯੋਜਨਾਵਾਂ ਮਿਲ ਗਈਆਂ!`
+      : language === 'gu'
+      ? `${profile.name || 'તમારા'} માટે ${matched.length} યોજનાઓ મળી છે!`
       : `Found ${matched.length} schemes for ${profile.name || 'you'}!`;
+
     speak(msg, language);
   };
 
   const handleMarkRead = (id: string) => {
-    const updated = notifications.map(n => n.id === id ? { ...n, read: true } : n);
+    const updated = notifications.map((notification) =>
+      notification.id === id ? { ...notification, read: true } : notification
+    );
     setNotifications(updated);
     storage.saveNotifications(updated);
   };
@@ -63,30 +113,34 @@ export function useAppState() {
   const handleRestartIntro = () => {
     stopSpeaking();
     setAppStep('genie');
-    setHasGreeted(false);
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((notification) => !notification.read).length;
 
   const tabConfig = [
     { id: 'dashboard' as Tab, icon: LayoutDashboard, label: { en: 'Home', hi: 'होम', pa: 'ਹੋਮ', gu: 'હોમ' } },
-    { id: 'profile' as Tab, icon: User, label: { en: 'Profile', hi: 'प्रोफाइल', pa: 'ਪ੍ਰੋਫਾਈਲ', gu: 'પ્રોファઇल' } },
-    { id: 'chat' as Tab, icon: MessageSquare, label: { en: 'Ask', hi: 'पूछें', pa: 'ਪੁੱਛੋ', gu: 'પૂछो' } },
-    { id: 'verify' as Tab, icon: ShieldCheck, label: { en: 'Verify', hi: 'सत्यापित', pa: 'ਤਸਦੀਕ', gu: 'VerIfy' } },
+    { id: 'profile' as Tab, icon: User, label: { en: 'Profile', hi: 'प्रोफ़ाइल', pa: 'ਪ੍ਰੋਫਾਈਲ', gu: 'પ્રોફાઇલ' } },
+    { id: 'chat' as Tab, icon: MessageSquare, label: { en: 'Ask', hi: 'पूछें', pa: 'ਪੁੱਛੋ', gu: 'પૂછો' } },
+    { id: 'verify' as Tab, icon: ShieldCheck, label: { en: 'Verify', hi: 'सत्यापित', pa: 'ਤਸਦੀਕ', gu: 'ચકાસો' } },
   ];
 
   return {
-    appStep, setAppStep,
-    activeTab, setActiveTab,
-    language, setLanguage,
-    profile, setProfile,
+    appStep,
+    setAppStep,
+    activeTab,
+    setActiveTab,
+    language,
+    setLanguage: handleLanguageChange,
+    profile,
+    setProfile,
     schemes,
     isLoadingSchemes,
     notifications,
-    showNotifications, setShowNotifications,
+    showNotifications,
+    setShowNotifications,
     unreadCount,
     tabConfig,
-    handleLanguageSelect,
+    startFreshSession,
     handleActionSelect,
     handleSaveProfile,
     handleMarkRead,

@@ -8,19 +8,31 @@ const KEYS = {
   ONBOARDED: 'jansaathi_onboarded',
 };
 
+export function createEmptyProfile(): UserProfile {
+  return {
+    name: '',
+    age: '',
+    occupation: '',
+    state: '',
+    income: '',
+    category: '',
+    documents: [],
+    gender: undefined,
+    phone: undefined,
+  };
+}
+
 export const storage = {
   getProfile(): UserProfile {
-    try {
-      const raw = localStorage.getItem(KEYS.PROFILE);
-      return raw ? JSON.parse(raw) : {
-        name: '', age: '', occupation: '', state: '', income: '', category: '', documents: [],
-        gender: undefined
-      };
-    } catch { return { name: '', age: '', occupation: '', state: '', income: '', category: '', documents: [] , gender: undefined}; }
+    return createEmptyProfile();
   },
 
   saveProfile(profile: UserProfile): void {
     localStorage.setItem(KEYS.PROFILE, JSON.stringify(profile));
+  },
+
+  clearProfile(): void {
+    localStorage.removeItem(KEYS.PROFILE);
   },
 
   getNotifications(): Notification[] {
@@ -50,6 +62,10 @@ export const storage = {
   saveChatHistory(history: { role: 'user' | 'ai'; text: string }[]): void {
     // Keep last 50 messages
     localStorage.setItem(KEYS.CHAT_HISTORY, JSON.stringify(history.slice(-50)));
+  },
+
+  clearChatHistory(): void {
+    localStorage.removeItem(KEYS.CHAT_HISTORY);
   },
 
   isOnboarded(): boolean {

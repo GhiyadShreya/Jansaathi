@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Bell, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { X, Bell, CheckCircle2, Clock } from 'lucide-react';
 import { Notification, Language } from '../types';
+import { getNotificationCopy } from '../utils/notificationText';
 
 interface NotificationPanelProps {
   notifications: Notification[];
@@ -68,6 +69,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
         <AnimatePresence>
           {notifications.map((n, i) => {
             const cfg = TYPE_CONFIG[n.type];
+            const copy = getNotificationCopy(n, language);
             return (
               <motion.div
                 key={n.id}
@@ -87,16 +89,16 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <p className={`text-sm font-bold leading-tight ${n.read ? 'text-gray-500' : 'text-gray-900'}`}>
-                      {n.title}
+                      {copy.title}
                     </p>
                     {!n.read && (
                       <div className="w-2 h-2 rounded-full shrink-0 mt-1" style={{ background: '#EF4444' }} />
                     )}
                   </div>
-                  <p className="text-xs text-gray-400 mt-1 line-clamp-2">{n.body}</p>
+                  <p className="text-xs text-gray-400 mt-1 line-clamp-2">{copy.body}</p>
                   <div className="flex items-center gap-1 mt-1.5 text-[10px] text-gray-400">
                     <Clock size={10} />
-                    {n.timestamp}
+                    {copy.timestamp}
                   </div>
                 </div>
               </motion.div>

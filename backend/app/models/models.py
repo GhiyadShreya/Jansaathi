@@ -57,12 +57,3 @@ class VerifyRequest(BaseModel):
     doc_name: str
     scheme_title: str
     language: Language = Language.en
-
-
-class SendOtpRequest(BaseModel):
-    phone: str
-
-
-class VerifyOtpRequest(BaseModel):
-    phone: str
-    otp: str

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React from 'react';
+import { motion } from 'motion/react';
 import { ChevronRight, Mic, Send } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
@@ -9,7 +9,6 @@ import { SchemeList } from '../SchemeList';
 import { QUICK_PROMPTS } from '../../constants/quickPrompts';
 import { Tab } from '../../hooks/useAppState';
 import { useChat } from '../../hooks/useChat';
-import { QuestionnaireModal } from '../QuestionnaireModal';
 
 interface DashboardTabProps {
   language: Language;
@@ -25,15 +24,11 @@ interface DashboardTabProps {
 export const DashboardTab: React.FC<DashboardTabProps> = ({
   language, profile, schemes, isLoadingSchemes, unreadCount, chat, setActiveTab, setProfile
 }) => {
-  // Show questionnaire if profile isn't complete. 
-  // E.g., if age is undefined or empty.
-  const [showQuestionnaire, setShowQuestionnaire] = useState(!profile.age);
-
   return (
     <>
       <motion.div
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-        className={`space-y-5 transition-all duration-300 ${showQuestionnaire ? 'blur-sm pointer-events-none select-none' : ''}`}
+        className="space-y-5 transition-all duration-300"
       >
         {/* Hero banner */}
         <div
@@ -106,7 +101,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 {language === 'hi' ? 'रीफ्रेश' : 'Refresh'}
               </button>
             </div>
-            <SchemeList schemes={schemes} isLoading={isLoadingSchemes} language={language} />
+            <SchemeList schemes={schemes} isLoading={isLoadingSchemes} language={language} profile={profile} />
           </div>
 
           {/* Quick chat widget */}
@@ -195,18 +190,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           </div>
         </div>
       </motion.div>
-
-      <AnimatePresence>
-        {showQuestionnaire && (
-          <QuestionnaireModal
-            onComplete={(data: any) => {
-              setProfile({ ...profile, ...data });
-              setShowQuestionnaire(false);
-            }}
-            onClose={() => setShowQuestionnaire(false)}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 };

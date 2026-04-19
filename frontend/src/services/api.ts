@@ -1,5 +1,5 @@
 /**
- * api.ts — all backend communication lives here.
+ * api.ts - all backend communication lives here.
  * The frontend never calls Groq directly anymore.
  */
 
@@ -26,8 +26,6 @@ async function get<T>(path: string): Promise<T> {
   return res.json();
 }
 
-// ── Chat ──────────────────────────────────────────────────────────────────────
-
 export async function getChatResponse(
   message: string,
   profile: UserProfile,
@@ -53,8 +51,6 @@ export async function clearChatHistory(): Promise<void> {
   await fetch(`${BASE_URL}/chat/history`, { method: 'DELETE' });
 }
 
-// ── Schemes ───────────────────────────────────────────────────────────────────
-
 export async function getMatchedSchemes(
   profile: UserProfile,
   language: Language,
@@ -64,7 +60,6 @@ export async function getMatchedSchemes(
     return data.schemes;
   } catch (e) {
     console.error('getMatchedSchemes error:', e);
-    // Fallback: fetch demo schemes from backend
     try {
       const fallback = await get<{ schemes: Scheme[] }>('/schemes/demo');
       return fallback.schemes.slice(0, 3);
@@ -73,8 +68,6 @@ export async function getMatchedSchemes(
     }
   }
 }
-
-// ── Verify ────────────────────────────────────────────────────────────────────
 
 export async function verifyDocument(
   doc_name: string,
@@ -85,32 +78,14 @@ export async function verifyDocument(
     return await post<{ valid: boolean; reason: string }>('/verify/', { doc_name, scheme_title, language });
   } catch (e) {
     console.error('verifyDocument error:', e);
-    return { valid: false, reason: 'Could not verify the document at this time. Please try again.' };
+    return {
+      valid: false,
+      reason: language === 'hi'
+        ? 'इस समय दस्तावेज़ सत्यापित नहीं हो सका। कृपया फिर से कोशिश करें।'
+        : 'Could not verify the document at this time. Please try again.',
+    };
   }
 }
-
-// ── Auth ──────────────────────────────────────────────────────────────────────
-
-export async function sendOtp(phone: string): Promise<{ success: boolean; message: string }> {
-  try {
-    return await post<{ success: boolean; message: string }>('/auth/send-otp', { phone });
-  } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to send OTP.';
-    return { success: false, message };
-  }
-}
-
-export async function verifyOtp(phone: string, otp: string): Promise<{ success: boolean; message: string }> {
-  try {
-    return await post<{ success: boolean; message: string }>('/auth/verify-otp', { phone, otp });
-  } catch (e) {
-    // Extract detail from FastAPI's HTTPException
-    const message = e instanceof Error && e.message.includes('detail') ? JSON.parse(e.message.split('): ')[1]).detail : 'OTP verification failed.';
-    return { success: false, message };
-  }
-}
-
-// ── OCR ───────────────────────────────────────────────────────────────────────
 
 export async function verifyDocumentOCR(
   file: File

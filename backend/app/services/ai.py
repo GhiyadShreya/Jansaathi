@@ -1,13 +1,14 @@
 """
-AI service layer — supports Ollama locally with Groq fallback.
+AI service layer - supports Ollama locally with Groq fallback.
 Tries Ollama first, falls back to Groq if Ollama fails and GROQ_API_KEY is configured.
 Set OLLAMA_BASE_URL and OLLAMA_MODEL in backend/.env to use Ollama.
 Set GROQ_API_KEY and GROQ_MODEL in backend/.env to enable Groq fallback.
 """
 import json
 import os
-import httpx
 from typing import Any
+
+import httpx
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 GROQ_BASE_URL = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
@@ -16,22 +17,15 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2")
 
 
-def _compose_prompt(system_prompt: str, user_message: str) -> str:
-    return (
-        f"{system_prompt}\n\nUser: {user_message}\n"  # Groq text models expect a single input string
-    )
-
-
 async def _call_groq(system_prompt: str, user_message: str) -> str:
-    """Send the prompt to Groq and return the generated text."""
     payload = {
         "model": GROQ_MODEL,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_message}
+            {"role": "user", "content": user_message},
         ],
         "temperature": 0.7,
-        "max_tokens": 1024
+        "max_tokens": 1024,
     }
     async with httpx.AsyncClient(timeout=120) as client:
         url = f"{GROQ_BASE_URL}/chat/completions"
@@ -44,20 +38,18 @@ async def _call_groq(system_prompt: str, user_message: str) -> str:
         data = resp.json()
 
     try:
-        content = data["choices"][0]["message"]["content"]
-        return content.strip()
+        return data["choices"][0]["message"]["content"].strip()
     except (KeyError, IndexError) as e:
         raise ValueError(f"Unexpected Groq response format: {data}") from e
 
 
 async def _call_ollama(system_prompt: str, user_message: str) -> str:
-    """Send a system+user turn to Ollama's /api/chat, return response text."""
     payload = {
         "model": OLLAMA_MODEL,
         "stream": False,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user",   "content": user_message},
+            {"role": "user", "content": user_message},
         ],
     }
     async with httpx.AsyncClient(timeout=120) as client:
@@ -68,14 +60,12 @@ async def _call_ollama(system_prompt: str, user_message: str) -> str:
 
 
 async def _call_ai(system_prompt: str, user_message: str) -> str:
-    # Prefer Groq if API key is configured, as it is generally faster and more reliable
     if GROQ_API_KEY:
         try:
             return await _call_groq(system_prompt, user_message)
         except Exception as groq_error:
             print(f"Groq failed: {groq_error}. Falling back to Ollama...")
 
-    # Otherwise, or if Groq fails, try Ollama
     try:
         return await _call_ollama(system_prompt, user_message)
     except Exception as e:
@@ -83,14 +73,12 @@ async def _call_ai(system_prompt: str, user_message: str) -> str:
         raise e
 
 
-# ── Public functions (same signatures as before) ──────────────────────────────
-
 async def get_chat_response(message: str, profile: dict, language: str) -> str:
     lang_instructions = {
         "en": "Respond in English.",
         "hi": "हिंदी में उत्तर दें।",
         "pa": "ਪੰਜਾਬੀ ਵਿੱਚ ਜਵਾਬ ਦਿਓ।",
-        "gu": "ગુજરાતીમાં જવાબ આપો।",
+        "gu": "ગુજરાતીમાં જવાબ આપો.",
     }
     system_prompt = (
         "You are Saathi, a helpful Indian government schemes assistant.\n"
@@ -108,14 +96,21 @@ async def get_chat_response(message: str, profile: dict, language: str) -> str:
 
 
 async def get_matched_schemes(profile: dict, language: str) -> list[dict]:
+    language_instructions = {
+        "en": "Return all scheme fields in English.",
+        "hi": "Return all scheme fields in Hindi written in Devanagari script only.",
+        "pa": "Return all scheme fields in Punjabi.",
+        "gu": "Return all scheme fields in Gujarati.",
+    }
     system_prompt = (
         "You are a government scheme matcher for India.\n"
-        "Given a user profile, return ONLY a valid JSON array (no markdown, no explanation).\n"
+        "Given a user profile, return ONLY a valid JSON array with no markdown or extra text.\n"
         "Each object must have exactly these fields:\n"
-        "  id (string), title (string), description (string), eligibility (string),\n"
-        "  benefits (string), category (string).\n"
-        "Return 3–5 schemes most relevant to the profile.\n"
-        "Use real Indian government schemes (PM-Kisan, Ayushman Bharat, PMAY, Mudra, etc.)."
+        "id (string), title (string), description (string), eligibility (string), "
+        "benefits (string), category (string), required_documents (array of strings).\n"
+        "Return 3 to 5 schemes most relevant to the profile.\n"
+        "Use real Indian government schemes such as PM-Kisan, Ayushman Bharat, PMAY, Mudra, and similar schemes.\n"
+        f"{language_instructions.get(language, 'Return all scheme fields in English.')}"
     )
     user_message = (
         f"Profile: Name={profile.get('name')}, Age={profile.get('age')}, "
@@ -135,20 +130,21 @@ async def get_matched_schemes(profile: dict, language: str) -> list[dict]:
 
 
 async def verify_document(doc_name: str, scheme_title: str, language: str) -> dict[str, Any]:
+    default_reason_instruction = "The 'reason' in the JSON response must be in English."
     lang_instructions = {
         "en": "The 'reason' in the JSON response must be in English.",
         "hi": "JSON प्रतिक्रिया में 'reason' फ़ील्ड हिंदी में होना चाहिए।",
-        "pa": "JSON ਜਵਾਬ ਵਿੱਚ 'reason' ਫੀਲਡ ਪੰਜਾਬੀ ਵਿੱਚ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ।",
-        "gu": "JSON પ્રતિસાદમાં 'reason' ફીલ્ડ ગુજરાતીમાં હોવું જોઈએ.",
+        "pa": "JSON ਜਵਾਬ ਵਿੱਚ 'reason' ਫੀਲਡ ਪੰਜਾਬੀ ਵਿੱਚ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।",
+        "gu": "JSON પ્રતિસાદમાં 'reason' ફીલ્ડ ગુજરાતી ભાષામાં હોવી જોઈએ.",
     }
     system_prompt = (
         "You are a document verification assistant for Indian government schemes.\n"
-        "Given a document name and a scheme name, determine if the document is valid/accepted for that scheme.\n"
-        "Be highly forgiving and inclusive. For example, '12th marksheet', '10th certificate', and 'fee receipt' are perfectly valid for Post-Matric and educational scholarships (Post-Matric means post-10th grade, including 11th, 12th, and college).\n"
-        "Standard identity documents (Aadhaar, PAN, Voter ID), income certificates, and caste certificates are valid for almost all welfare schemes.\n"
-        'Return ONLY valid JSON with exactly two fields: "valid" (boolean) and "reason" (string, 1–2 sentences).\n'
-        "No markdown, no extra text.\n"
-        f"{lang_instructions.get(language, 'The `reason` in the JSON response must be in English.')}"
+        "Given a document name and a scheme name, determine if the document is valid or accepted for that scheme.\n"
+        "Be highly forgiving and inclusive. For example, 12th marksheet, 10th certificate, and fee receipt are valid for post-matric and educational scholarships.\n"
+        "Standard identity documents, income certificates, and caste certificates are valid for most welfare schemes.\n"
+        'Return ONLY valid JSON with exactly two fields: "valid" (boolean) and "reason" (string, 1 to 2 sentences).\n'
+        "No markdown and no extra text.\n"
+        f"{lang_instructions.get(language, default_reason_instruction)}"
     )
     user_message = (
         f'Document: "{doc_name}"\n'
