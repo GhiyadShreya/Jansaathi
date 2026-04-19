@@ -1,165 +1,232 @@
-# JanSathi — AI-Powered Citizen Assistance Platform
+<div align="center">
 
-> A multilingual, voice-first platform that helps citizens discover relevant government schemes based on their personal profile.
+# 🏛️ JanSathi
 
----
+### AI-Powered Citizen Assistance Platform
 
-## Table of Contents
+*Helping Indian citizens discover government schemes through multilingual, voice-first AI*
 
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture Diagram](#architecture-diagram)
-- [User Flow Diagram](#user-flow-diagram)
-- [Tech Stack](#tech-stack)
-- [Supported Languages](#supported-languages)
-- [Setup Instructions](#setup-instructions)
-- [Folder Structure](#folder-structure)
-- [Limitations](#limitations)
-- [Future Scope](#future-scope)
-- [Author](#author)
+<br/>
+
+![Version](https://img.shields.io/badge/version-1.0.0-orange?style=for-the-badge)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-Llama%203.2-black?style=for-the-badge)
+![Languages](https://img.shields.io/badge/Languages-4%20Indian-FF6B35?style=for-the-badge)
+
+</div>
 
 ---
 
-## Overview
+## 📖 Overview
 
-JanSathi ("Jan" = people, "Sathi" = companion) is a citizen assistance platform designed to bridge the gap between government welfare schemes and the people they serve. Users interact with the system using voice in their preferred language, and receive personalized scheme recommendations based on their profile.
+**JanSathi** *(Jan = People, Sathi = Companion)* is a citizen assistance platform built to bridge the gap between government welfare schemes and the people they serve.
 
-The platform currently runs on **Llama 3.2** via Ollama (local inference) and supports voice input/output with a multilingual pipeline covering four Indian languages.
+- 🎤 Users interact via **voice or text** in their preferred language
+- 🧠 A **local LLM (Llama 3.2 via Ollama)** processes queries and recommends schemes
+- 👤 A **3D avatar** provides a conversational, accessible interface
+- 🌐 Currently supports **Hindi, English, Gujarati, and Punjabi**
 
----
-
-## Features
-
-### ✅ Implemented
-
-- **Voice Input & Output** — Users can speak queries; the system responds with synthesized speech using the browser's Web Speech API.
-- **Multilingual Support (4 Languages)** — Hindi, English, Gujarati, and Punjabi are fully supported across the UI, TTS, and STT pipeline.
-- **Profile-Based Personalization** — Scheme recommendations are filtered based on user profile data (age, income, category, state, etc.).
-- **3D Avatar Interface** — A GLB-based avatar rendered with Three.js provides a conversational UI with animations.
-- **Document Verification Module** — Users can check document eligibility for specific schemes.
-- **Authentication** — User authentication handled via OTP.
-- **Notification Engine** — Standalone Python scheduler for scheme alerts and reminders.
-- **Local LLM via Ollama (Llama 3.2)** — All AI inference runs locally using `llama3.2` through Ollama.
-
-### 🚧 Planned
-
-- **Full RAG Pipeline** — Retrieval-Augmented Generation using Qdrant vector database and document embeddings.
-- **Airavata + IndicTrans Integration** — For production-grade Indic language translation.
-- **Bhashini TTS** — High-quality Text-to-Speech for Indian languages in production.
-- **vLLM for Scalable Inference** — Replace Ollama with vLLM for high-throughput, production deployments.
-- **PostgreSQL + Redis + Qdrant Architecture** — Full database layer for persistent storage, caching, and vector search.
-- **WhatsApp Notifications** — Notify users of scheme deadlines and updates via WhatsApp.
-- **More Language Support** — Tamil, Telugu, Bengali, Marathi, and other scheduled Indian languages.
-- **Cloud Deployment** — Deployment on Tata Cloud or hybrid infrastructure.
+> ⚠️ This project is under active development. Features marked 🚧 are not yet available.
 
 ---
 
-## Architecture Diagram
+## ✅ Implemented Features
+
+| Feature | Description |
+|---|---|
+|  **Voice Input & Output** | Speech-to-text and text-to-speech via the browser's Web Speech API |
+|  **4-Language Support** | Hindi, English, Gujarati, and Punjabi across UI, STT, and TTS |
+|  **3D Avatar (Saathi)** | GLB-based animated avatar rendered with Three.js |
+|  **Scheme Personalization** | Recommendations filtered by age, income, category, and state |
+|  **Document Verification** | Upload and check document eligibility for schemes |
+|  **Authentication** | User login and session management via API |
+|  **Notification Engine** | Standalone Python scheduler for scheme alerts and reminders |
+|  **Local LLM (Llama 3.2)** | All AI inference runs locally via Ollama — no external API needed |
+
+---
+
+## 🚧 Planned Features
+
+| Feature | Description |
+|---|---|
+|  **Full RAG Pipeline** | Scheme retrieval using Qdrant vector DB + document embeddings |
+|  **Airavata + IndicTrans** | Production-grade Indic language translation |
+|  **Bhashini TTS** | High-quality Indian language speech synthesis |
+|  **vLLM Inference** | Scalable, multi-user LLM serving |
+|  **PostgreSQL + Redis + Qdrant** | Full production database architecture |
+|  **WhatsApp Notifications** | Scheme deadline alerts via WhatsApp |
+|  **Cloud Deployment** | Tata Cloud / hybrid infrastructure |
+|  **More Languages** | Tamil, Telugu, Bengali, Marathi, and others |
+
+---
+
+## 🏗️ Architecture Diagram
 
 ```mermaid
 flowchart TD
-    A([User]) -->|Voice / Text Input| B[React Frontend\nThree.js Avatar]
-    B -->|REST API Call| C[FastAPI Backend]
-    C -->|Auth Check| D[Authentication Service]
-    C -->|Profile Lookup| E[User Profile Store\nJSON File-based]
-    C -->|Inference Request| F[Ollama — Llama 3.2\nLocal LLM]
-    F -->|Generated Response| C
-    C -->|Multilingual Processing| G[Language Pipeline\nHindi · English · Gujarati · Punjabi]
-    G -->|Translated Response| B
-    C -->|Document Handling| H[Document Verification Module]
-    C -->|Scheme Alerts| I[Notification Engine\nScheduler / Worker]
-    B -->|TTS Voice Output| A
+    subgraph Client [Client Layer]
+        A([User])
+        B[React Frontend + Three.js Avatar]
+    end
 
-    style A fill:#4A90D9,color:#fff
-    style F fill:#F5A623,color:#fff
-    style G fill:#7ED321,color:#fff
-    style I fill:#9B59B6,color:#fff
+    subgraph Backend [Backend Services]
+        C[FastAPI Backend]
+        D[Auth Service]
+        E[(JSON Profile Store)]
+        H[Document Verification]
+    end
+
+    subgraph AI_Engine [AI & Processing Layer]
+        F[Ollama: Llama 3.2]
+        G[Language Pipeline]
+    end
+
+    subgraph Workers [Asynchronous Tasks]
+        I[Notification Engine: Python Scheduler]
+    end
+
+    %% Client Layer Interactions
+    A -- "Voice/Text Input" --> B
+    B -- "TTS Audio Output" --> A
+
+    %% Client to Backend
+    B -- "REST API Call" --> C
+
+    %% Backend Service Interactions
+    C -- "Validate" --> D
+    C -- "Read/Write" --> E
+    C -- "Process Files" --> H
+
+    %% Backend to AI Engine
+    C -- "Prompt & Profile" --> F
+    C -- "Translate" --> G
+
+    %% AI Engine Outputs
+    F -- "Generated Response" --> C
+    G -- "Translated Text" --> B
+
+    %% Backend to Workers
+    C -- "Schedule Alerts" --> I
 ```
 
 ---
 
-## User Flow Diagram
+## 🔄 User Flow Diagram
 
 ```mermaid
 flowchart TD
-    A([User Opens JanSathi]) --> B[Login / Register]
-    B --> C[Select Language\nHindi / English / Gujarati / Punjabi]
-    C --> D[Complete Profile\nAge · Income · Category · State]
-    D --> E{Input Method}
-    E -->|Voice| F[Speech Captured via Browser Mic]
-    E -->|Text| G[Text Input]
-    F --> H[Speech-to-Text Processing]
+    A([🚀 Open JanSathi]) --> B[Login / Register]
+    B --> C[🌐 Select Language\nHindi · English · Gujarati · Punjabi]
+    C --> D[👤 Complete Profile\nAge · Income · Category · State]
+    D --> E{How would you like to interact?}
+
+    E -->|🎤 Voice| F[Mic Captures Speech]
+    E -->|⌨️ Text| G[User Types Query]
+
+    F --> H[🔄 Speech-to-Text\nWeb Speech API]
     G --> H
-    H --> I[FastAPI Backend\nQuery + Profile Forwarded]
-    I --> J[Ollama — Llama 3.2\nGenerates Scheme Recommendations]
-    J --> K[Multilingual Response Pipeline]
-    K --> L{Output}
-    L -->|Text| M[Display Response via Avatar UI]
-    L -->|Audio| N[TTS Voice Output\nWeb Speech API]
-    M --> O([User Reviews Schemes])
+
+    H --> I[⚙️ FastAPI Backend\nQuery + Profile]
+    I --> J[🤖 Llama 3.2 via Ollama\nGenerates Recommendations]
+    J --> K[🌐 Multilingual Response Pipeline]
+
+    K --> L{Output Format}
+    L -->|Text| M[👤 Avatar Displays Response]
+    L -->|Audio| N[🔊 TTS Voice Output]
+
+    M --> O([📋 User Reviews Schemes])
     N --> O
-    O -->|Upload Documents| P[Document Verification Module]
-    P --> Q([Eligibility Result Returned])
+
+    O -->|📄 Upload Docs| P[🛡️ Document Verification]
+    P --> Q([✅ Eligibility Result])
+
+    style A fill:#4A90D9,color:#fff,stroke:#2c6fad
+    style J fill:#F5A623,color:#fff,stroke:#c07d00
+    style Q fill:#27AE60,color:#fff,stroke:#1e8449
 ```
 
 ---
 
-## Tech Stack
+## ⚙️ Tech Stack
 
-| Layer              | Technology                                              |
-|--------------------|---------------------------------------------------------|
-| Frontend           | React, TypeScript, Three.js (GLB avatar rendering)      |
-| Backend            | FastAPI (Python)                                        |
-| AI / LLM           | Ollama — **Llama 3.2** (local inference)                |
-| Voice              | Web Speech API — STT & TTS (browser-native)            |
-| Languages          | Hindi, English, Gujarati, Punjabi                       |
-| Storage            | JSON file-based (no database currently)                |
-| Auth               | API-based authentication                                |
-| Notification       | Standalone Python scheduler/worker                     |
-| Planned AI         | Airavata, IndicTrans, vLLM, Bhashini TTS               |
-| Planned DB         | PostgreSQL, Redis, Qdrant                              |
+<br/>
+
+**Frontend**
+
+| Technology | Purpose |
+|---|---|
+| React + TypeScript | UI framework |
+| Three.js | GLB avatar rendering |
+| Vite | Build tool and dev server |
+| Web Speech API | Browser-native STT & TTS |
+
+<br/>
+
+**Backend**
+
+| Technology | Purpose |
+|---|---|
+| FastAPI (Python) | REST API server |
+| Pydantic v2 | Data validation and schemas |
+| JSON file store | Lightweight data persistence |
+
+<br/>
+
+**AI / Voice**
+
+| Technology | Status | Purpose |
+|---|---|---|
+| Ollama — Llama 3.2 | ✅ Current | Local LLM inference |
+| Web Speech API | ✅ Current | Voice input and output |
+| Bhashini TTS | 🚧 Planned | Production Indic TTS |
+| Airavata + IndicTrans | 🚧 Planned | Indic language translation |
+| vLLM | 🚧 Planned | Scalable inference |
+| Qdrant | 🚧 Planned | Vector search for RAG |
 
 ---
 
-## Supported Languages
+## 🌐 Supported Languages
 
 | Language | Code | UI | Voice Input (STT) | Voice Output (TTS) |
-|----------|------|----|--------------------|---------------------|
-| English  | `en` | ✅ | ✅                 | ✅                  |
-| Hindi    | `hi` | ✅ | ✅                 | ✅                  |
-| Gujarati | `gu` | ✅ | ✅                 | ✅                  |
-| Punjabi  | `pa` | ✅ | ✅                 | ✅                  |
+|---|---|---|---|---|
+| English  | `en` | ✅ | ✅ | ✅ |
+| Hindi    | `hi` | ✅ | ✅ | ✅ |
+| Gujarati | `gu` | ✅ | ✅ | ✅ |
+| Punjabi  | `pa` | ✅ | ✅ | ✅ |
 
-> More languages (Tamil, Telugu, Bengali, Marathi) are planned for future releases.
+> 🚧 Tamil, Telugu, Bengali, and Marathi support is planned for future releases.
 
 ---
 
-## Setup Instructions
+## 🚀 Setup & Installation
 
-> ⚠️ This project requires **3 terminals running simultaneously**.
+> ⚠️ **This project requires 3 terminals running simultaneously.**
+
+<br/>
 
 ### Prerequisites
 
-- [Ollama](https://ollama.com/) installed with Llama 3.2 pulled
-- Python 3.11+
-- Node.js 18+
+- [Ollama](https://ollama.com/) installed
+- Python **3.11+**
+- Node.js **18+**
 
 ```bash
-# Pull the required model
+# Pull the required model before starting
 ollama pull llama3.2
 ```
 
----
+<br/>
 
-### Terminal 1 — Start Ollama (LLM Server)
+### 🖥️ Terminal 1 — Ollama LLM Server
 
 ```bash
 ollama serve
 ```
 
----
+<br/>
 
-### Terminal 2 — Start Backend (FastAPI)
+### ⚙️ Terminal 2 — FastAPI Backend
 
 ```bash
 cd backend
@@ -167,9 +234,11 @@ pip install -r requirements.txt
 python -m uvicorn app.main:app --reload --port 8000
 ```
 
----
+> API docs available at `http://localhost:8000/docs`
 
-### Terminal 3 — Start Frontend (React)
+<br/>
+
+### 🌐 Terminal 3 — React Frontend
 
 ```bash
 cd frontend
@@ -177,9 +246,11 @@ npm install
 npm run dev
 ```
 
----
+> App available at `http://localhost:5173`
 
-### Optional — Start Notification Engine
+<br/>
+
+### 🔔 Optional — Notification Engine
 
 ```bash
 cd notification-engine
@@ -188,53 +259,53 @@ python worker.py
 
 ---
 
-## Folder Structure
+## 📁 Folder Structure
 
 ```
 Jansaathi/
 │
-├── frontend/                        # React + TypeScript frontend
+├── frontend/                          # React + TypeScript frontend
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Avatar.tsx           # Three.js GLB avatar renderer
-│   │   │   ├── GenieIntro.tsx       # Intro animation
-│   │   │   ├── LanguageSelect.tsx   # Language picker (4 languages)
-│   │   │   ├── ActionSelect.tsx     # Icon-based action picker
-│   │   │   ├── ProfileForm.tsx      # Multilingual profile form
-│   │   │   ├── SchemeList.tsx       # Scheme recommendation cards
-│   │   │   ├── NotificationPanel.tsx
+│   │   │   ├── Avatar.tsx             # Three.js GLB avatar renderer
+│   │   │   ├── GenieIntro.tsx         # Intro animation
+│   │   │   ├── LanguageSelect.tsx     # 4-language picker
+│   │   │   ├── ActionSelect.tsx       # Icon-based action picker
+│   │   │   ├── ProfileForm.tsx        # Multilingual profile form
+│   │   │   ├── SchemeList.tsx         # Scheme recommendation cards
+│   │   │   ├── NotificationPanel.tsx  # Alerts and reminders UI
 │   │   │   └── Logo.tsx
 │   │   ├── services/
-│   │   │   ├── tts.ts               # Text-to-speech (Web Speech API)
-│   │   │   └── storage.ts           # LocalStorage persistence
-│   │   ├── types.ts                 # TypeScript types + demo data
-│   │   ├── App.tsx                  # Main app with full UX flow
+│   │   │   ├── tts.ts                 # Text-to-speech (Web Speech API)
+│   │   │   └── storage.ts             # LocalStorage persistence
+│   │   ├── types.ts                   # TypeScript types + demo data
+│   │   ├── App.tsx                    # Main app with full UX flow
 │   │   └── main.tsx
 │   ├── index.html
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── backend/                         # FastAPI Python backend
+├── backend/                           # FastAPI Python backend
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── chat.py              # Chat endpoints
-│   │   │   ├── schemes.py           # Scheme matching + verification
-│   │   │   ├── notifications.py     # Notification CRUD
-│   │   │   ├── profile.py           # Profile management
-│   │   │   └── health.py            # Health check
+│   │   │   ├── chat.py                # Chat endpoints
+│   │   │   ├── schemes.py             # Scheme matching + verification
+│   │   │   ├── notifications.py       # Notification CRUD
+│   │   │   ├── profile.py             # Profile management
+│   │   │   └── health.py              # Health check
 │   │   ├── services/
-│   │   │   └── ai_service.py        # Ollama / Llama 3.2 integration
+│   │   │   └── ai_service.py          # Ollama / Llama 3.2 integration
 │   │   ├── models/
-│   │   │   └── models.py            # Pydantic models
+│   │   │   └── models.py              # Pydantic models
 │   │   ├── utils/
-│   │   │   └── storage.py           # JSON file store
-│   │   └── main.py                  # FastAPI app entry point
-│   ├── data/                        # Auto-created JSON data files
+│   │   │   └── storage.py             # JSON file store
+│   │   └── main.py                    # FastAPI entry point
+│   ├── data/                          # Auto-created JSON data files
 │   └── requirements.txt
 │
-├── notification-engine/             # Standalone notification scheduler
-│   ├── worker.py                    # Main worker loop
-│   └── scheduler.py                 # Schedule rules
+├── notification-engine/               # Standalone notification scheduler
+│   ├── worker.py                      # Main worker loop
+│   └── scheduler.py                   # Schedule rules
 │
 ├── .gitignore
 ├── .gitattributes
@@ -245,34 +316,40 @@ Jansaathi/
 
 ---
 
-## Limitations
+## ⚠️ Limitations
 
-- **No RAG pipeline yet** — The LLM does not retrieve from a live scheme database. Responses depend on Llama 3.2's pre-trained knowledge, which may be incomplete or outdated for specific schemes.
-- **Local inference only** — Ollama with Llama 3.2 is not suited for concurrent multi-user production deployments.
-- **4 languages only** — Only Hindi, English, Gujarati, and Punjabi are currently supported. Other Indian languages are not yet available.
-- **Voice quality depends on browser** — TTS/STT uses the browser's Web Speech API, which varies in accuracy and language support across devices and browsers.
-- **No persistent database** — User profiles and session data are stored in JSON files, not a production-grade database.
-- **Document verification is partial** — The module accepts uploads but full automated verification logic is not complete.
-
----
-
-## Future Scope
-
-- Integrate a **full RAG pipeline** with Qdrant to ground LLM responses in an up-to-date government scheme database.
-- Replace browser STT/TTS with **Bhashini** for accurate Indic language speech support.
-- Add **Airavata + IndicTrans** for robust multilingual translation across all 22 scheduled Indian languages.
-- Scale inference using **vLLM** to handle concurrent users in production.
-- Build out the **PostgreSQL + Redis + Qdrant** data architecture for persistence, caching, and vector search.
-- Send scheme deadline reminders and updates via **WhatsApp notifications**.
-- Deploy on **Tata Cloud or hybrid infrastructure** for reliability and data residency compliance.
-- Expand language coverage to Tamil, Telugu, Bengali, and Marathi.
+- **No RAG pipeline** — The LLM responds from pre-trained knowledge only. Scheme data may be incomplete or outdated.
+- **Local inference only** — Ollama + Llama 3.2 is not designed for concurrent multi-user production traffic.
+- **4 languages only** — Only Hindi, English, Gujarati, and Punjabi are supported today.
+- **Browser-dependent voice** — STT/TTS quality varies across browsers and devices using the Web Speech API.
+- **No persistent database** — User data is stored in JSON files; not suitable for production scale.
+- **Partial document verification** — Upload works, but full automated eligibility logic is incomplete.
 
 ---
 
-## Author
+## 🔮 Future Scope
 
-**JanSathi** is developed as an initiative to make government welfare schemes more accessible to citizens through conversational AI.
+- 📚 **RAG pipeline** with Qdrant to serve up-to-date, retrieved scheme information
+- 🔊 **Bhashini TTS** for production-quality Indic voice output
+- 🌏 **Airavata + IndicTrans** for all 22 scheduled Indian languages
+- ⚡ **vLLM** for high-throughput, concurrent LLM serving
+- 🗄️ **PostgreSQL + Redis + Qdrant** for full production data architecture
+- 📱 **WhatsApp integration** for scheme deadline alerts and status updates
+- ☁️ **Cloud deployment** on Tata Cloud or hybrid infrastructure
+- 🗣️ **Expanded language support** — Tamil, Telugu, Bengali, Marathi
 
 ---
 
-> *This project is under active development. Features marked 🚧 are not yet available.*
+## 👩‍💻 Author
+
+<div align="center">
+
+**JanSathi** — Built to make government welfare schemes accessible to every Indian citizen.
+
+[![GitHub](https://img.shields.io/badge/GitHub-GhiyadShreya%2FJansaathi-181717?style=for-the-badge&logo=github)](https://github.com/GhiyadShreya/Jansaathi)
+
+<br/>
+
+*🇮🇳 Bridging citizens and government — one conversation at a time.*
+
+</div>
