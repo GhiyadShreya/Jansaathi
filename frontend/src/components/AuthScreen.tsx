@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, ArrowRight, CheckCircle2, X } from 'lucide-react';
 import { Language } from '../types';
 import { sendOtp, verifyOtp } from '../services/api';
 
 interface AuthScreenProps {
   language: Language;
   onLogin: (phone: string) => void;
+  onClose?: () => void;
 }
 
 const LABELS: Record<Language, any> = {
@@ -64,7 +65,7 @@ const LABELS: Record<Language, any> = {
   }
 };
 
-export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onLogin }) => {
+export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onLogin, onClose }) => {
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
@@ -118,6 +119,15 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ language, onLogin }) => 
         animate={{ y: 0, scale: 1 }}
         transition={{ duration: 0.5, type: 'spring' }}
       >
+        {onClose && (
+          <button 
+            onClick={onClose} 
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition-colors text-white z-30"
+          >
+            <X size={20} />
+          </button>
+        )}
+
         <div className="p-8 text-center" style={{ background: 'linear-gradient(135deg, #FF6B35, #F59E0B)' }}>
           <div className="flex justify-center mb-4">
              <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-lg">

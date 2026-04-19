@@ -10,7 +10,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Language, LANGUAGES } from '../types';
-import { speak, speakChooseLanguage, registerAudioBufferCallback } from '../services/tts';
+import { speak, registerAudioBufferCallback } from '../services/tts';
 import { GLBAvatar, GLBAvatarHandle } from './GLBAvatar';
 
 interface LanguageSelectProps {
@@ -36,7 +36,7 @@ export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelect }) => {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      speakChooseLanguage();
+      speak("Welcome to Jan Saathi! Please select your language. Hindi, English, Punjabi, or Gujarati.", "en");
     }, 400);
 
     return () => {
@@ -57,6 +57,7 @@ export const LanguageSelect: React.FC<LanguageSelectProps> = ({ onSelect }) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+
       {/* Decorative top stripe — UNCHANGED */}
       <div className="absolute top-0 left-0 right-0 h-2 flex z-10">
         {['#FF9933', '#FFFFFF', '#138808', '#FF9933', '#138808', '#FFFFFF', '#FF9933'].map((c, i) => (
