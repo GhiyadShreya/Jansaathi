@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏛️ JanSathi
+# 🏛️ JanSaathi
 
 ### AI-Powered Citizen Assistance Platform
 
