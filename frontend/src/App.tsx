@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'motion/react';
 
 import { GenieIntro } from './components/GenieIntro';
 import { LanguageSelect } from './components/LanguageSelect';
 import { AuthScreen } from './components/AuthScreen';
-import { ActionSelect } from './components/ActionSelect';
+import { QuestionnaireModal } from './components/QuestionnaireModal';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { BottomNav } from './components/layout/BottomNav';
@@ -21,19 +21,79 @@ export default function App() {
   const app = useAppState();
   const chat = useChat(app.profile, app.language);
 
-  if (app.appStep === 'genie') return <GenieIntro onComplete={() => app.setAppStep('language')} />;
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Skip the initial Genie intro (purple page)
+  useEffect(() => {
+    if (app.appStep === 'genie') {
+      app.setAppStep('language');
+    }
+  }, [app.appStep, app]);
+
+  // Trigger auth modal when accessing profile tab if not authenticated
+  useEffect(() => {
+    if (app.activeTab === 'profile' && !isAuthenticated) {
+      setShowAuthModal(true);
+    }
+  }, [app.activeTab, isAuthenticated]);
+
+  // Clear chat when language changes
+  useEffect(() => {
+    if (chat && typeof chat.setMessages === 'function') {
+      chat.setMessages([]);
+    } else if (chat && typeof (chat as any).clearMessages === 'function') {
+      (chat as any).clearMessages();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [app.language]);
+
+  if (app.appStep === 'genie') return null;
   if (app.appStep === 'language') return <LanguageSelect onSelect={(lang) => {
     app.setLanguage(lang);
-    app.setAppStep('auth');
+    app.setAppStep('dashboard');
+    setShowQuestionnaire(true);
   }} />;
-  if (app.appStep === 'auth') return <AuthScreen language={app.language} onLogin={(phone) => {
-    app.setProfile({ ...app.profile, phone });
-    app.setAppStep('action');
-  }} />;
-  if (app.appStep === 'action') return <ActionSelect language={app.language} onSelect={app.handleActionSelect} />;
 
   return (
     <div className="min-h-screen" style={{ background: '#FBF8F4', fontFamily: "'Inter', sans-serif" }}>
+
+      <AnimatePresence>
+        {showAuthModal && (
+          <AuthScreen 
+            language={app.language} 
+            onLogin={(phone) => {
+              app.setProfile({ ...app.profile, phone });
+              setIsAuthenticated(true);
+              setShowAuthModal(false);
+            }} 
+            onClose={() => {
+              setShowAuthModal(false);
+              // If they cancel out of auth, return them to the dashboard
+              if (app.activeTab === 'profile') {
+                app.setActiveTab('dashboard');
+              }
+            }} 
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showQuestionnaire && (
+          <QuestionnaireModal
+            onComplete={(data) => {
+              app.setProfile({ ...app.profile, ...data });
+              setShowQuestionnaire(false);
+              // Automatically trigger a scheme search to fetch matches 
+              setTimeout(() => {
+                if (app.handleSaveProfile) app.handleSaveProfile();
+              }, 100);
+            }}
+            onClose={() => setShowQuestionnaire(false)}
+          />
+        )}
+      </AnimatePresence>
 
       <Navbar
         language={app.language}
@@ -98,6 +158,7 @@ export default function App() {
                   unreadCount={app.unreadCount}
                   chat={chat}
                   setActiveTab={app.setActiveTab}
+                  setProfile={app.setProfile}
                 />
               )}
 
