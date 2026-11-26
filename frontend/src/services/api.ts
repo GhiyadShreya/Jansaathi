@@ -4,8 +4,9 @@
  */
 
 import { UserProfile, Scheme, Language } from '../types';
+import { API_BASE_URL } from '../config/api';
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api';
+const BASE_URL = API_BASE_URL;
 
 async function post<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {

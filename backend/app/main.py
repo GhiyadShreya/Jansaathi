@@ -9,6 +9,7 @@ from pathlib import Path
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")  # root .env
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")  # backend/.env
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn 
@@ -20,9 +21,17 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Comma-separated list of frontend origins allowed to call the API.
+# e.g. ALLOWED_ORIGINS=https://jansaathi.vercel.app,http://localhost:3000
+ALLOWED_ORIGINS = [
+    o.strip().rstrip("/")
+    for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000").split(",")
+    if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,4 +52,4 @@ async def root():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=int(os.getenv("PORT", "8000")), reload=True)

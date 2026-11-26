@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mic, Send, X } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { ChatMarkdown } from '../ui/ChatMarkdown';
 
 import { Language, UserProfile } from '../../types';
 import { Avatar } from '../Avatar';
@@ -15,7 +15,14 @@ interface ChatTabProps {
   chat: ReturnType<typeof useChat>;
 }
 
-export const ChatTab: React.FC<ChatTabProps> = ({ language, profile, chat }) => (
+const AI_DISCLAIMER: Record<Language, string> = {
+  en: 'Saathi is an AI and can make mistakes about scheme names, amounts or eligibility. Always confirm on the official website before applying:',
+  hi: 'साथी एक AI है और योजनाओं के नाम, राशि या पात्रता में गलती कर सकता है। आवेदन से पहले आधिकारिक वेबसाइट पर ज़रूर जाँच लें:',
+  pa: 'ਸਾਥੀ ਇੱਕ AI ਹੈ ਅਤੇ ਯੋਜਨਾਵਾਂ ਦੇ ਨਾਮ, ਰਕਮ ਜਾਂ ਯੋਗਤਾ ਵਿੱਚ ਗਲਤੀ ਕਰ ਸਕਦਾ ਹੈ। ਅਰਜ਼ੀ ਦੇਣ ਤੋਂ ਪਹਿਲਾਂ ਸਰਕਾਰੀ ਵੈੱਬਸਾਈਟ ’ਤੇ ਜ਼ਰੂਰ ਜਾਂਚ ਕਰੋ:',
+  gu: 'સાથી એક AI છે અને યોજનાઓના નામ, રકમ કે પાત્રતામાં ભૂલ કરી શકે છે. અરજી કરતા પહેલા સત્તાવાર વેબસાઇટ પર જરૂર ખાતરી કરો:',
+};
+
+export const ChatTab: React.FC<ChatTabProps> =({ language, profile, chat }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
     className="rounded-3xl overflow-hidden flex flex-col"
@@ -109,7 +116,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ language, profile, chat }) => 
               border: msg.role === 'ai' ? '1px solid #F0EDE8' : 'none',
             }}
           >
-            <ReactMarkdown>{msg.text}</ReactMarkdown>
+            <ChatMarkdown text={msg.text} />
           </div>
           {msg.role === 'user' && (
             <div
@@ -173,6 +180,12 @@ export const ChatTab: React.FC<ChatTabProps> = ({ language, profile, chat }) => 
           </button>
         </div>
       </div>
+      <p className="max-w-3xl mx-auto mt-2 px-2 text-[11px] leading-snug text-center" style={{ color: '#9CA3AF' }}>
+        {AI_DISCLAIMER[language] ?? AI_DISCLAIMER.en}{' '}
+        <a href="https://www.myscheme.gov.in" target="_blank" rel="noopener noreferrer" className="underline font-semibold" style={{ color: '#C2410C' }}>
+          myscheme.gov.in
+        </a>
+      </p>
     </div>
   </motion.div>
 );

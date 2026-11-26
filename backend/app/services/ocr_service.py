@@ -1,3 +1,4 @@
+import io
 import re
 from PIL import Image
 import pytesseract
@@ -33,7 +34,7 @@ async def verify_document_with_ocr(image_bytes: bytes) -> Dict[str, Any]:
     Performs OCR on an image and heuristically determines the document type.
     """
     try:
-        image = Image.open(image_bytes)
+        image = Image.open(io.BytesIO(image_bytes))
         extracted_text = pytesseract.image_to_string(image)
 
         doc_type: DocumentType = "unknown"

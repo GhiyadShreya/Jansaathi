@@ -6,8 +6,10 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-DATA_DIR = Path(__file__).parent.parent.parent / "data"
-DATA_DIR.mkdir(exist_ok=True)
+# Point DATA_DIR at a persistent disk in production (e.g. /var/data on Render),
+# otherwise JSON data is lost on every redeploy.
+DATA_DIR = Path(os.getenv("DATA_DIR", Path(__file__).parent.parent.parent / "data"))
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _read_file(filename: str) -> Any:
