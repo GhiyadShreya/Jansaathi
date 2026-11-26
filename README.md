@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏛️ JanSathi
+# 🏛️ JanSaathi
 
 ### AI-Powered Citizen Assistance Platform
 
@@ -34,7 +34,7 @@
 
 ## 📖 Overview
 
-**JanSathi** *(Jan = People, Sathi = Companion)* is a citizen assistance platform built to bridge the gap between government welfare schemes and the people they serve.
+**JanSaathi** *(Jan = People, Saathi = Companion)* is a citizen assistance platform built to bridge the gap between government welfare schemes and the people they serve.
 
 - 🎤 Users interact via **voice or text** in their preferred language
 - 🧠 An **LLM via Groq** (`openai/gpt-oss-120b`) answers questions and recommends schemes, grounded in a **verified reference of 21 central schemes**
@@ -126,7 +126,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A([🚀 Open JanSathi]) --> B[Login with Mobile Number]
+    A([🚀 Open JanSaathi]) --> B[Login with Mobile Number]
     B --> C[🌐 Select Language\nHindi · English · Gujarati · Punjabi]
     C --> D[👤 Complete Profile\nAge · Income · Category · State]
     D --> E{How would you like to interact?}
@@ -385,7 +385,7 @@ Jansaathi/
 
 <div align="center">
 
-**JanSathi** — Built to make government welfare schemes accessible to every Indian citizen.
+**JanSaathi** — Built to make government welfare schemes accessible to every Indian citizen.
 
 [![GitHub](https://img.shields.io/badge/GitHub-GhiyadShreya%2FJansaathi-181717?style=for-the-badge&logo=github)](https://github.com/GhiyadShreya/Jansaathi)
 [![Live Demo](https://img.shields.io/badge/Live-jansaaathi.vercel.app-000000?style=for-the-badge&logo=vercel)](https://jansaaathi.vercel.app/)
