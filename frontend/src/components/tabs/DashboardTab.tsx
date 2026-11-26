@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ChevronRight, Mic, Send } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { ChatMarkdown } from '../ui/ChatMarkdown';
 
 
 import { Language, UserProfile, Scheme, LANGUAGES } from '../../types';
@@ -136,7 +136,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-xs leading-relaxed ${msg.role === 'user' ? 'rounded-tr-none text-white' : 'rounded-tl-none text-gray-800'}`}
                       style={{ background: msg.role === 'user' ? 'linear-gradient(135deg, #FF6B35, #F59E0B)' : '#F5F0EB' }}
                     >
-                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                      <ChatMarkdown text={msg.text} />
                     </div>
                   </div>
                 ))

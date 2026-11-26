@@ -39,7 +39,7 @@ SPEAKATOO_ENGINE = os.getenv("SPEAKATOO_TTS_ENGINE", "neural")
 SPEAKATOO_FORMAT = os.getenv("SPEAKATOO_TTS_FORMAT", "wav").lower()
 SPEAKATOO_SYNTHESIZE_TYPE = os.getenv("SPEAKATOO_SYNTHESIZE_TYPE", "save")
 
-CACHE_DIR = Path(__file__).resolve().parents[2] / "data" / "tts_cache"
+CACHE_DIR = Path(os.getenv("DATA_DIR", Path(__file__).resolve().parents[2] / "data")) / "tts_cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 INDEX_PATH = CACHE_DIR / "index.json"
 

@@ -1,4 +1,5 @@
 import { Language } from '../types';
+import { API_ORIGIN } from '../config/api';
 
 const TTS_LANG_MAP: Record<Language, string> = {
   en: 'en-IN',
@@ -7,7 +8,7 @@ const TTS_LANG_MAP: Record<Language, string> = {
   gu: 'gu-IN',
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = API_ORIGIN;
 
 type TtsCategory = 'choose_language' | 'welcome' | 'chat_response' | 'generic';
 type PresetKey = 'choose_language' | 'welcome';
@@ -55,6 +56,11 @@ export function registerAudioBufferCallback(cb: (buf: AudioBuffer, text: string,
 
 function stripMarkdown(text: string): string {
   return text
+    // Tables: drop separator rows (|---|:--:|), turn cell borders into pauses
+    .replace(/^[ \t]*\|?[ \t:|-]*-{2,}[ \t:|-]*\|?[ \t]*$/gm, '')
+    .replace(/^[ \t]*\|[ \t]*/gm, '')
+    .replace(/[ \t]*\|[ \t]*$/gm, '.')
+    .replace(/[ \t]*\|[ \t]*/g, ', ')
     .replace(/#{1,6}\s*/g, '')
     .replace(/\*\*(.*?)\*\*/g, '$1')
     .replace(/\*(.*?)\*/g, '$1')
@@ -62,11 +68,13 @@ function stripMarkdown(text: string): string {
     .replace(/^\s*[-*+]\s+/gm, '')
     .replace(/^\s*\d+\.\s+/gm, '')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/https?:\/\/\S+/g, '')
     .replace(/_{1,2}(.*?)_{1,2}/g, '$1')
     .replace(/>\s*/g, '')
     .replace(/\n{2,}/g, '. ')
     .replace(/\n/g, ' ')
     .replace(/\s{2,}/g, ' ')
+    .replace(/\.(\s*\.)+/g, '.')
     .trim();
 }
 
