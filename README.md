@@ -26,7 +26,7 @@
 | | Link |
 |---|---|
 | 🌐 **Live App** | **[jansaaathi.vercel.app](https://jansaaathi.vercel.app/)** |
-| 🎥 **Video Demo** | *Coming soon* <!-- TODO: replace with the video URL, e.g. [Watch on YouTube](https://youtu.be/your-video-id) --> |
+| 🎥 **Video Demo** | **[Watch on YouTube](https://www.youtube.com/watch?v=dYWcx63Uz8A)** |
 
 > ℹ️ The backend runs on Render's free tier and sleeps when idle, so the **first request can take up to a minute**.
 
