@@ -9,7 +9,7 @@
 <br/>
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-jansaaathi.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://jansaaathi.vercel.app/)
-[![Video Demo](https://img.shields.io/badge/Video%20Demo-Coming%20Soon-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=dYWcx63Uz8A)
+[![Video Demo](https://img.shields.io/badge/Video%20Demo-youtube.com%20-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=dYWcx63Uz8A)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-orange?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
