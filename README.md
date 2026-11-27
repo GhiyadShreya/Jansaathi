@@ -183,7 +183,7 @@ flowchart TD
 | Pydantic v2 | Data validation and schemas |
 | Tesseract + pytesseract + Pillow | OCR for document verification |
 | JSON file store | Lightweight data persistence |
-| Docker | Deployment image (includes Tesseract) |
+| Docker + Docker Compose | One-command local run; deployment image (includes Tesseract) |
 
 <br/>
 
@@ -195,6 +195,7 @@ flowchart TD
 | Ollama — Llama 3.2 | ✅ Optional | Local fallback when Groq is unavailable |
 | Speakatoo | ✅ Current | Indian-language text-to-speech |
 | Web Speech API | ✅ Current | Voice input; fallback voice output |
+| Wispr Flow | 🚧 Planned | Speech-to-text for voice input, instead of Speakatoo (see *Voice with Wispr Flow* below) |
 | Bhashini TTS | 🚧 Planned | Production Indic TTS |
 | Airavata + IndicTrans | 🚧 Planned | Indic language translation |
 | vLLM | 🚧 Planned | Scalable inference |
@@ -225,6 +226,41 @@ flowchart TD
 ---
 
 ## 🚀 Setup & Installation
+
+### 🐳 Quick start: one command (Docker Compose)
+
+The only thing you need installed is **Docker** (with Docker Compose v2.24+).
+
+```bash
+git clone https://github.com/GhiyadShreya/Jansaathi.git
+cd Jansaathi
+docker compose up
+```
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:3000 |
+| Backend API | http://localhost:8000 (docs at `/docs`, health at `/api/health`) |
+
+**No `.env` file or API keys are needed to start.** Without keys the app still opens and you can use the main screens:
+
+- AI chat replies with *"AI key not set"*
+- scheme cards fall back to built-in demo schemes
+- voice output uses the browser's built-in speech
+- OCR document detection works fully, since Tesseract is in the image
+
+To turn on the AI and the Speakatoo voices, copy the example file, fill in your own keys, and rebuild:
+
+```bash
+cp backend/.env.example backend/.env   # every variable is listed there with a placeholder
+docker compose up --build
+```
+
+> Never commit `backend/.env`; it is git-ignored. Data (profiles, chat history, TTS cache) lives in the `backend-data` Docker volume. Run `docker compose down -v` to reset it.
+
+<br/>
+
+### 🛠️ Manual setup (without Docker)
 
 > Run the **backend** and **frontend** in two terminals.
 
@@ -291,6 +327,34 @@ python worker.py
 
 ---
 
+## 🎙️ Voice with Wispr Flow (instead of Speakatoo)
+
+> 🚧 **Status: planned.** The code still uses Speakatoo and the Web Speech API today, as described above.
+
+JanSaathi is a **voice-first** product: the main task is done by speaking. We plan to build the voice layer on **[Wispr Flow](https://wisprflow.ai/)** instead of Speakatoo.
+
+**Why Wispr Flow**
+
+- **Voice input is the core of the product.** Speakatoo only speaks replies aloud (text-to-speech). Wispr Flow turns what the user *says* into text, which is the step that decides whether the conversation works at all.
+- **Cleaner transcripts.** Wispr Flow's speech-to-text removes filler words and applies auto-edits, so the LLM gets a clean question instead of raw speech with *"umm"* and restarts.
+- **Many languages.** The Wispr Flow API supports 100+ languages, which fits our plan to grow beyond Hindi, English, Gujarati and Punjabi.
+- **Consistent across devices.** Today voice input relies on the browser's Web Speech API, whose quality depends on the browser (see *Limitations*). One server-side API gives every user the same quality.
+- **One less paid voice vendor.** Speakatoo needs an account, voice IDs for each language and a server-side audio cache.
+
+**How it will fit in**
+
+| Step | Today | With Wispr Flow |
+|---|---|---|
+| User speaks → text | Browser Web Speech API | Wispr Flow API (WebSocket for live dictation, REST for short clips) |
+| Text → AI reply | Groq LLM + Reply Guard | *unchanged* |
+| Reply → speech | Speakatoo TTS (cached) | Browser speech synthesis, with Speakatoo kept only as an optional upgrade |
+
+- The Wispr Flow API key will stay **on the backend only**. The browser streams microphone audio to a FastAPI endpoint, which calls Wispr Flow and returns the text, so the key never reaches public JavaScript.
+- The key will be added to `backend/.env.example` as a placeholder. Like every other key, the app still starts without it and falls back to the browser's speech recognition.
+- API reference: [api-docs.wisprflow.ai](https://api-docs.wisprflow.ai/)
+
+---
+
 ## ☁️ Deployment
 
 The live demo runs the **frontend on Vercel** and the **backend on Render** (Docker). Step-by-step settings, environment variables and known limits are in **[DEPLOY.md](DEPLOY.md)**.
@@ -323,6 +387,8 @@ Jansaathi/
 │   │   ├── types.ts                   # TypeScript types
 │   │   └── App.tsx                    # Main app flow
 │   ├── public/avatar.glb              # Avatar model
+│   ├── Dockerfile                     # Builds the site and serves it with nginx
+│   ├── nginx.conf
 │   ├── .env.example
 │   └── package.json
 │
@@ -347,6 +413,7 @@ Jansaathi/
 │   ├── worker.py                      # Main worker loop
 │   └── scheduler.py                   # Schedule rules
 │
+├── docker-compose.yml                 # `docker compose up` runs frontend + backend
 ├── DEPLOY.md                          # Vercel + Render deployment guide
 └── README.md
 ```

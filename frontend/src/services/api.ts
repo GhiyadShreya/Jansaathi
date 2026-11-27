@@ -37,6 +37,11 @@ export async function getChatResponse(
     return data.reply;
   } catch (e) {
     console.error('getChatResponse error:', e);
+    if (e instanceof Error && e.message.includes('AI key not set')) {
+      return language === 'hi'
+        ? 'AI कुंजी सेट नहीं है। AI जवाबों के लिए backend/.env में GROQ_API_KEY जोड़ें।'
+        : 'AI key not set. Add GROQ_API_KEY to backend/.env to enable AI replies.';
+    }
     return language === 'hi'
       ? 'क्षमा करें, अभी जवाब नहीं दे पा रहा। कृपया दोबारा कोशिश करें।'
       : 'Sorry, I could not respond right now. Please try again.';
