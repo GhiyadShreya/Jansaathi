@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.models.models import ChatRequest
 from app.utils.storage import get_chat_history, save_chat_history
-from app.services.ai import get_chat_response
+from app.services.ai import AIKeyNotSet, get_chat_response
 
 router = APIRouter()
 
@@ -14,6 +14,8 @@ async def chat(request: ChatRequest):
             profile=request.profile.model_dump() if request.profile else {},
             language=request.language.value,
         )
+    except AIKeyNotSet as e:
+        raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"AI service error: {e}")
 

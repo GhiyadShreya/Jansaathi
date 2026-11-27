@@ -64,6 +64,10 @@ async def _call_groq(
         raise ValueError(f"Unexpected Groq response format: {data}") from e
 
 
+class AIKeyNotSet(RuntimeError):
+    """No Groq key is configured and no Ollama server answered."""
+
+
 async def _call_ollama(system_prompt: str, user_message: str) -> str:
     payload = {
         "model": OLLAMA_MODEL,
@@ -93,6 +97,10 @@ async def _call_ai(
         return await _call_ollama(system_prompt, user_message)
     except Exception as e:
         print(f"Ollama failed: {e}")
+        if not GROQ_API_KEY:
+            raise AIKeyNotSet(
+                "AI key not set. Add GROQ_API_KEY to backend/.env (or run Ollama) to enable AI replies."
+            ) from e
         raise e
 
 

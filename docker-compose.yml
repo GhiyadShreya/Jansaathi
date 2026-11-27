@@ -1,0 +1,49 @@
+# One command to run JanSaathi locally:
+#
+#   docker compose up
+#
+# Frontend: http://localhost:3000
+# Backend:  http://localhost:8000  (API docs at /docs, health at /api/health)
+#
+# No .env file or API keys are needed to start. Without keys the app still
+# opens and works; AI chat replies with a "key not set" message and voice
+# output falls back to the browser's built-in speech.
+# To enable AI and Speakatoo voices: cp backend/.env.example backend/.env
+# and fill in the values, then run `docker compose up --build`.
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATA_DIR: /data
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+    volumes:
+      - backend-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Baked into the JS at build time; the browser calls this URL directly.
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  backend-data:
