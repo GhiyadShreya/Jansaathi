@@ -9,7 +9,7 @@
 <br/>
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-jansaaathi.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://jansaaathi.vercel.app/)
-[![Video Demo](https://img.shields.io/badge/Video%20Demo-youtube.com%20-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/kLoMYFBXCCc)
+[![Video Demo](https://img.shields.io/badge/Video%20Demo-youtube.com%20-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/qMgkCOT8kCQ)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-orange?style=for-the-badge)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
@@ -26,7 +26,7 @@
 | | Link |
 |---|---|
 | 🌐 **Live App** | **[jansaaathi.vercel.app](https://jansaaathi.vercel.app/)** |
-| 🎥 **Video Demo** | **[Watch on YouTube](https://youtu.be/kLoMYFBXCCc)** |
+| 🎥 **Video Demo** | **[Watch on YouTube](https://youtu.be/qMgkCOT8kCQ)** |
 
 > ℹ️ The backend runs on Render's free tier and sleeps when idle, so the **first request can take up to a minute**.
 
@@ -41,7 +41,6 @@
 - 👤 A **3D talking avatar** provides a conversational, accessible interface
 - 🌐 Currently supports **Hindi, English, Gujarati, and Punjabi**
 
-> ⚠️ This project is under active development. Features marked 🚧 are not yet available.
 
 ---
 
